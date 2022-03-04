@@ -1,4 +1,4 @@
-package com.starmediadev.plugins.starquests;
+package com.starmediadev.plugins.starquests.objects.interfaces;
 
 import org.bukkit.entity.Player;
 

@@ -1,4 +1,4 @@
-package com.starmediadev.plugins.starquests;
+package com.starmediadev.plugins.starquests.objects.rewards;
 
 import org.bukkit.entity.Player;
 
