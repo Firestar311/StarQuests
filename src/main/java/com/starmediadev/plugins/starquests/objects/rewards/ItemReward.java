@@ -6,16 +6,30 @@ import org.bukkit.inventory.ItemStack;
 public class ItemReward extends QuestReward {
     protected ItemStack itemStack;
     
-    public ItemReward(String id, String displayName, ItemStack itemStack) {
-        super(id, displayName);
-        this.itemStack = itemStack;
+    private ItemReward(Builder builder) {
+        super(builder);
+        this.itemStack = builder.itemStack;
     }
     
     @Override
-    void applyReward(Player player) throws Exception {
+    public void applyReward(Player player) throws Exception {
         if (player == null || !player.isOnline()) {
             throw new PlayerRewardException("Player is not online.");
         }
         player.getInventory().addItem(itemStack);
+    }
+    
+    public static class Builder extends QuestReward.Builder<ItemReward, ItemReward.Builder> {
+        protected ItemStack itemStack;
+        
+        public Builder itemStack(ItemStack itemStack) {
+            this.itemStack = itemStack;
+            return this;
+        }
+        
+        @Override
+        public ItemReward build() {
+            return new ItemReward(this);
+        }
     }
 }

@@ -1,5 +1,7 @@
 package com.starmediadev.plugins.starquests.objects;
 
+import com.starmediadev.plugins.starquests.QuestManager;
+
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -8,14 +10,14 @@ import java.util.UUID;
 public class QuestLine extends QuestObject {
     protected Set<String> lineQuests = new HashSet<>();
     
-//    public QuestLine(QuestManager questManager, String id, String displayName, String description, boolean repeatable) {
-//        super(questManager, id, displayName, description, repeatable);
-//    }
-    
-    
-    public QuestLine(Builder<?, ?> builder, Set<String> lineQuests) {
+    private QuestLine(Builder builder) {
         super(builder);
-        this.lineQuests = lineQuests;
+    }
+    
+    public List<Quest> getAvailableQuests(UUID player) {
+        List<Quest> quests = getQuests();
+        quests.removeIf(quest -> !quest.isAvailable(player));
+        return quests;
     }
     
     @Override
@@ -35,5 +37,20 @@ public class QuestLine extends QuestObject {
         List<Quest> quests = questManager.getQuests();
         quests.removeIf(quest -> !lineQuests.contains(quest.getId()));
         return quests;
+    }
+    
+    public void addQuest(Quest quest) {
+        this.lineQuests.add(quest.getId());   
+    }
+    
+    public static class Builder extends QuestObject.Builder<QuestLine, Builder> {
+        public Builder(QuestManager questManager, String id) {
+            super(questManager, id);
+        }
+    
+        @Override
+        public QuestLine build() {
+            return new QuestLine(this);
+        }
     }
 }

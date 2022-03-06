@@ -2,7 +2,6 @@ package com.starmediadev.plugins.starquests.objects;
 
 import com.starmediadev.plugins.starquests.QuestManager;
 import com.starmediadev.plugins.starquests.objects.interfaces.QuestRequirement;
-import org.bukkit.entity.Player;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -71,27 +70,45 @@ public abstract class QuestObject {
         this.active = active;
     }
     
+    public void addRequiredQuestObject(QuestObject questObject) {
+        this.requiredQuestObjects.add(questObject.getId());
+    }
+    
+    public void addOptionalQuestObject(QuestObject questObject) {
+        this.optionalQuestObjects.add(questObject.getId());
+    }
+    
+    public void addRequirement(QuestRequirement requirement) {
+        this.otherRequirements.add(requirement);
+    }
+    
     public abstract boolean isComplete(UUID player);
     
-    public boolean isAvailable(Player player) {
+    public boolean isAvailable(UUID player) {
         if (!isActive()) {
-            return true;
-        }
-        if (isComplete(player.getUniqueId())) {
             return false;
         }
-        for (String id : this.requiredQuestObjects) {
-            QuestObject questObject = questManager.get(id);
-            if (questObject != null) {
-                if (!questObject.isComplete(player.getUniqueId())) {
-                    return false;
+        
+        if (isComplete(player)) {
+            return false;
+        }
+        
+        if (requiredQuestObjects != null && !requiredQuestObjects.isEmpty()) {
+            for (String id : this.requiredQuestObjects) {
+                QuestObject questObject = questManager.get(id);
+                if (questObject != null) {
+                    if (!questObject.isComplete(player)) {
+                        return false;
+                    }
                 }
             }
         }
         
-        for (QuestRequirement requirement : this.otherRequirements) {
-            if (!requirement.checkSatisfies(player)) {
-                return false;
+        if (this.otherRequirements != null && !this.otherRequirements.isEmpty()) {
+            for (QuestRequirement requirement : this.otherRequirements) {
+                if (!requirement.checkSatisfies(player)) {
+                    return false;
+                }
             }
         }
         return true;
@@ -99,7 +116,7 @@ public abstract class QuestObject {
     
     protected static abstract class Builder<Q extends QuestObject, B extends QuestObject.Builder<Q, B>> {
         protected final QuestManager questManager;
-        protected final String id;
+        protected String id;
         protected String displayName, description;
         protected boolean repeatable, active;
         protected Set<String> requiredQuestObjects = new HashSet<>(), optionalQuestObjects = new HashSet<>();
@@ -107,6 +124,11 @@ public abstract class QuestObject {
         public Builder(QuestManager questManager, String id) {
             this.questManager = questManager;
             this.id = id;
+        }
+        
+        public B id(String id) {
+            this.id = id;
+            return (B) this;
         }
     
         public B displayName(String displayName) {

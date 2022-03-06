@@ -1,6 +1,7 @@
 package com.starmediadev.plugins.starquests;
 
 import com.starmediadev.plugins.starquests.objects.Quest;
+import com.starmediadev.plugins.starquests.objects.QuestLine;
 import com.starmediadev.plugins.starquests.objects.QuestObject;
 import com.starmediadev.plugins.starquests.objects.QuestObjective;
 import com.starmediadev.plugins.starquests.storage.StorageHandler;
@@ -46,5 +47,9 @@ public class QuestManager {
     
     public boolean isQuestObjectiveComplete(UUID uuid, Quest quest, QuestObjective objective) {
         return storageHandler.isQuestObjectiveComplete(uuid, quest.getId(), objective.getId());
+    }
+    
+    public List<QuestLine> getQuestLines() {
+        return this.questObjects.values().stream().filter(value -> value instanceof QuestLine).map(value -> (QuestLine) value).collect(Collectors.toList());
     }
 }

@@ -1,8 +1,8 @@
 package com.starmediadev.plugins.starquests.objects.interfaces;
 
-import org.bukkit.entity.Player;
+import java.util.UUID;
 
 @FunctionalInterface
 public interface QuestRequirement {
-    boolean checkSatisfies(Player player);
+    boolean checkSatisfies(UUID player);
 }

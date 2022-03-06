@@ -3,7 +3,7 @@ package com.starmediadev.plugins.starquests;
 import com.starmediadev.plugins.starquests.objects.Quest;
 import com.starmediadev.plugins.starquests.objects.QuestObjective;
 import com.starmediadev.plugins.starquests.objects.actions.BlockBreakAction;
-import com.starmediadev.plugins.starquests.objects.actions.MobKillAction;
+import com.starmediadev.plugins.starquests.objects.actions.EntityKillAction;
 import com.starmediadev.plugins.starquests.objects.actions.NPCClickAction;
 import com.starmediadev.plugins.starquests.objects.actions.QuestAction;
 import net.citizensnpcs.api.event.NPCClickEvent;
@@ -41,7 +41,7 @@ public class ActionListener implements Listener {
         for (Quest quest : quests) {
             for (QuestObjective objective : quest.getObjectives()) {
                 QuestAction<?> action = objective.getQuestAction();
-                if (action instanceof MobKillAction mobKillAction) {
+                if (action instanceof EntityKillAction mobKillAction) {
                     mobKillAction.onAction(e, quest, objective);
                 }
             }

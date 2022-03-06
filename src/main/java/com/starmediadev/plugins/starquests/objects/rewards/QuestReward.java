@@ -6,9 +6,9 @@ public abstract class QuestReward {
     protected final String id;
     protected String displayName;
     
-    public QuestReward(String id, String displayName) {
-        this.id = id;
-        this.displayName = displayName;
+    protected QuestReward(Builder<?, ?> builder) {
+        this.id = builder.id;
+        this.displayName = builder.displayName;
     }
     
     public String getId() {
@@ -23,5 +23,21 @@ public abstract class QuestReward {
         this.displayName = displayName;
     }
     
-    abstract void applyReward(Player player) throws Exception;
+    public abstract void applyReward(Player player) throws Exception;
+    
+    protected static abstract class Builder<T extends QuestReward, B extends QuestReward.Builder<T, B>> {
+        protected String id, displayName;
+        
+        public B id(String id) {
+            this.id = id;
+            return (B) this;
+        }
+        
+        public B displayName(String displayName) {
+            this.displayName = displayName;
+            return (B) this;
+        }
+        
+        public abstract T build();
+    }
 }

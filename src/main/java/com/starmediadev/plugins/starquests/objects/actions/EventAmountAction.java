@@ -10,19 +10,19 @@ import org.bukkit.event.Event;
 import org.bukkit.event.entity.EntityDeathEvent;
 
 import java.lang.reflect.Method;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public abstract class EventAmountAction<K, D extends QuestData, E extends Event> extends QuestAction<E> {
     
-    protected Map<K, Integer> requiredAmounts;
+    protected K type;
+    protected int amount;
     
-    public EventAmountAction(String actionId, Map<K, Integer> requiredAmounts) {
+    public EventAmountAction(String actionId, K type, int amount) {
         super(actionId);
-        this.requiredAmounts = requiredAmounts;
+        this.type = type;
+        this.amount = amount;
     }
     
-    protected abstract Map<K, Integer> handleEvent(E event, Quest quest, QuestObjective questObjective, StorageHandler storageHandler, D questData);
+    protected abstract int handleEvent(E event, Quest quest, QuestObjective questObjective, StorageHandler storageHandler, D questData);
     
     @Override
     public void onAction(E e, Quest quest, QuestObjective questObjective) {
@@ -52,28 +52,19 @@ public abstract class EventAmountAction<K, D extends QuestData, E extends Event>
             throw new RuntimeException("There was a problem getting the player in an EventAmountAction of type " + getClass());
         }
         
-        if (quest.isAvailable(player)) {
+        if (quest.isAvailable(player.getUniqueId())) {
             D questData = null;
             try {
                 questData = (D) storageHandler.getQuestData(player.getUniqueId(), quest, questObjective);
             } catch (ClassCastException ex) {
             }
             
-            Map<K, Integer> currentProgress = handleEvent(e, quest, questObjective, storageHandler, questData);
+            int currentProgress = handleEvent(e, quest, questObjective, storageHandler, questData);
             
-            AtomicBoolean hasMetRequired = new AtomicBoolean(true);
-            requiredAmounts.forEach((material, amount) -> {
-                if (!currentProgress.containsKey(material)) {
-                    hasMetRequired.set(false);
-                } else {
-                    if (currentProgress.get(material) < amount) {
-                        hasMetRequired.set(false);
-                    }
+            if (currentProgress >= amount) {
+                if (!questObjective.isComplete(player.getUniqueId())) {
+                    questObjective.complete(player.getUniqueId());
                 }
-            });
-            
-            if (hasMetRequired.get()) {
-                questObjective.complete(player.getUniqueId());
             }
         }
     }

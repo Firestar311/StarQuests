@@ -6,13 +6,15 @@ import com.starmediadev.plugins.starquests.objects.data.QuestData;
 import com.starmediadev.utils.collection.ListMap;
 import com.starmediadev.utils.collection.MultiMap;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 public class YamlStorageHandler implements StorageHandler {
     
     private ListMap<UUID, QuestData> questDataMap = new ListMap<>();
     private ListMap<UUID, String> completedQuests = new ListMap<>();
-    private MultiMap<UUID, String, String> completedQuestObjectives = new MultiMap<>();
+    private MultiMap<UUID, String, List<String>> completedQuestObjectives = new MultiMap<>();
     
     @Override
     public void addQuestData(UUID uniqueId, QuestData value) {
@@ -40,7 +42,12 @@ public class YamlStorageHandler implements StorageHandler {
     
     @Override
     public void setCompletedObjective(UUID uniqueId, Quest quest, QuestObjective questObjective) {
-        completedQuestObjectives.put(uniqueId, quest.getId(), questObjective.getId());
+        List<String> completedObjectives = completedQuestObjectives.get(uniqueId, quest.getId());
+        if (completedObjectives == null) {
+            completedObjectives = new ArrayList<>();
+            completedQuestObjectives.put(uniqueId, quest.getId(), completedObjectives);
+        }
+        completedObjectives.add(questObjective.getId());
     }
     
     @Override
@@ -59,8 +66,10 @@ public class YamlStorageHandler implements StorageHandler {
     @Override
     public boolean isQuestObjectiveComplete(UUID uniqueId, String questId, String objectiveId) {
         if (completedQuestObjectives.containsKey(uniqueId)) {
-            String oid = completedQuestObjectives.get(uniqueId, questId);
-            return oid != null;
+            List<String> completedObjectives = completedQuestObjectives.get(uniqueId, questId);
+            if (completedObjectives != null) {
+                return completedObjectives.contains(objectiveId);
+            }
         }
         return false;
     }

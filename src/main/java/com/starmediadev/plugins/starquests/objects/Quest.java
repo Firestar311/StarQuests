@@ -8,15 +8,20 @@ import java.util.Set;
 import java.util.UUID;
 
 public class Quest extends QuestObject {
-    protected Set<QuestObjective> objectives;
+    protected Set<QuestObjective> objectives = new HashSet<>();
     protected Set<QuestReward> rewards;
     protected boolean optional;
     
     private Quest(Quest.Builder builder) {
         super(builder);
-        objectives = new HashSet<>(builder.objectives);
+        builder.objectives.forEach(this::addObjective);
         rewards = new HashSet<>(builder.rewards);
         optional = builder.optional;
+    }
+    
+    public void addObjective(QuestObjective objective) {
+        objective.setQuestId(this.id);
+        this.objectives.add(objective);
     }
     
     @Override
@@ -64,6 +69,21 @@ public class Quest extends QuestObject {
         
         public Builder addObjective(QuestObjective objective) {
             objectives.add(objective);
+            return this;
+        }
+        
+        public Builder addReward(QuestReward questReward) {
+            rewards.add(questReward);
+            return this;
+        }
+        
+        public Builder clearObjectives() {
+            objectives.clear();
+            return this;
+        }
+        
+        public Builder clearRewards() {
+            rewards.clear();
             return this;
         }
     
