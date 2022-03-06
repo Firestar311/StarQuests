@@ -9,8 +9,8 @@ import java.util.UUID;
 
 public class QuestObjective {
     protected final String id, questId;
-    protected String displayName, description;
     protected final QuestAction<?> questAction;
+    protected String displayName, description;
     
     public QuestObjective(String id, String questId, String displayName, String description, QuestAction<?> questAction) {
         this.id = id;
@@ -56,5 +56,14 @@ public class QuestObjective {
         if (quest.isComplete(uniqueId)) {
             storageHandler.setCompletedQuest(uniqueId, quest);
         }
+    }
+    
+    public boolean isComplete(UUID player) {
+        QuestManager questManager = StarQuests.getInstance().getQuestManager();
+        Quest quest = questManager.getQuest(questId);
+        if (questManager.isQuestComplete(player, quest)) {
+            return true;
+        }
+        return questManager.isQuestObjectiveComplete(player, quest, this);
     }
 }

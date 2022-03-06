@@ -19,7 +19,7 @@ public class MobKillAction extends EventAmountAction<EntityType, MobKillQuestDat
         if (questData == null) {
             questData = new MobKillQuestData(quest.getId(), questObjective.getId(), event.getEntity().getKiller().getUniqueId());
         }
-        storageHandler.addQuestData(event.getEntity().getKiller().getUniqueId(), quest, questObjective, this, questData);
+        storageHandler.addQuestData(event.getEntity().getKiller().getUniqueId(), questData);
     
         EntityType type = event.getEntityType();
         if (this.requiredAmounts.containsKey(type)) {

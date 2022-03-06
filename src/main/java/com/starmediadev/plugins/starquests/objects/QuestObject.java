@@ -16,15 +16,19 @@ public abstract class QuestObject {
     protected final String id;
     protected String displayName, description;
     protected boolean repeatable, active;
-    protected Set<String> requiredQuestObjects = new HashSet<>(), optionalQuestObjects = new HashSet<>();
-    protected Set<QuestRequirement> requiredOtherRequirements = new HashSet<>();
+    protected Set<String> requiredQuestObjects, optionalQuestObjects;
+    protected Set<QuestRequirement> otherRequirements;
     
-    public QuestObject(QuestManager questManager, String id, String displayName, String description, boolean repeatable) {
-        this.questManager = questManager;
-        this.id = id;
-        this.displayName = displayName;
-        this.description = description;
-        this.repeatable = repeatable;
+    protected QuestObject(Builder<?, ?> builder) {
+        questManager = builder.questManager;
+        id = builder.id;
+        displayName = builder.displayName;
+        description = builder.description;
+        repeatable = builder.repeatable;
+        active = builder.active;
+        requiredQuestObjects = new HashSet<>(builder.requiredQuestObjects);
+        optionalQuestObjects = new HashSet<>(builder.optionalQuestObjects);
+        otherRequirements = new HashSet<>(builder.otherRequirements);
     }
     
     public final QuestManager getQuestManager() {
@@ -85,11 +89,61 @@ public abstract class QuestObject {
             }
         }
         
-        for (QuestRequirement requirement : this.requiredOtherRequirements) {
+        for (QuestRequirement requirement : this.otherRequirements) {
             if (!requirement.checkSatisfies(player)) {
                 return false;
             }
         }
         return true;
+    }
+    
+    protected static abstract class Builder<Q extends QuestObject, B extends QuestObject.Builder<Q, B>> {
+        protected final QuestManager questManager;
+        protected final String id;
+        protected String displayName, description;
+        protected boolean repeatable, active;
+        protected Set<String> requiredQuestObjects = new HashSet<>(), optionalQuestObjects = new HashSet<>();
+        protected Set<QuestRequirement> otherRequirements = new HashSet<>();
+        public Builder(QuestManager questManager, String id) {
+            this.questManager = questManager;
+            this.id = id;
+        }
+    
+        public B displayName(String displayName) {
+            this.displayName = displayName;
+            return (B) this;
+        }
+    
+        public B description(String description) {
+            this.description = description;
+            return (B) this;
+        }
+    
+        public B repeatable(boolean repeatable) {
+            this.repeatable = repeatable;
+            return (B) this;
+        }
+    
+        public B active(boolean active) {
+            this.active = active;
+            return (B) this;
+        }
+        
+        public B addRequiredQuestObject(QuestObject object) {
+            this.requiredQuestObjects.add(object.getId());
+            return (B) this;
+        }
+    
+        public B addOptionalQuestObject(QuestObject object) {
+            this.optionalQuestObjects.add(object.getId());
+            return (B) this;
+        }
+        
+        public B addRequirement(QuestRequirement requirement) {
+            this.otherRequirements.add(requirement);
+            return (B) this;
+        }
+        
+        public abstract Q build();
     }
 }

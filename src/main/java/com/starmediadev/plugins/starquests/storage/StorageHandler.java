@@ -7,25 +7,18 @@ import com.starmediadev.plugins.starquests.objects.data.QuestData;
 
 import java.util.UUID;
 
-public class StorageHandler {
-    public void addQuestData(UUID uniqueId, Quest quest, QuestObjective questObjective, QuestAction<?> action, QuestData value) {
-        //TODO
-    }
+public interface StorageHandler {
+    void addQuestData(UUID uniqueId, QuestData value);
     
-    public QuestData getQuestData(UUID uniqueId, Quest quest, QuestObjective questObjective) {
-        return null; //TODO
-    }
+    QuestData getQuestData(UUID uniqueId, Quest quest, QuestObjective questObjective);
     
-    public void removeQuestData(UUID uniqueId, Quest quest, QuestObjective questObjective) {
-        //TODO
-    }
+    void removeQuestData(UUID uniqueId, Quest quest, QuestObjective questObjective);
     
-    public void setCompletedObjective(UUID uniqueId, Quest quest, QuestObjective questObjective) {
-        //TODO
-        removeQuestData(uniqueId, quest, questObjective);
-    }
+    void setCompletedObjective(UUID uniqueId, Quest quest, QuestObjective questObjective);
     
-    public void setCompletedQuest(UUID uniqueId, Quest quest) {
-        //TODO
-    }
+    void setCompletedQuest(UUID uniqueId, Quest quest);
+    
+    boolean isQuestComplete(UUID uniqueId, String id);
+    
+    boolean isQuestObjectiveComplete(UUID uniqueId, String questId, String objectiveId);
 }

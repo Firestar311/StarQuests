@@ -20,7 +20,7 @@ public class BlockBreakAction extends EventAmountAction<Material, BlockBreakQues
         if (questData == null) {
             questData = new BlockBreakQuestData(quest.getId(), questObjective.getId(), event.getPlayer().getUniqueId());
         }
-        storageHandler.addQuestData(event.getPlayer().getUniqueId(), quest, questObjective, this, questData);
+        storageHandler.addQuestData(event.getPlayer().getUniqueId(), questData);
         
         Material type = event.getBlock().getType();
         if (this.requiredAmounts.containsKey(type)) {
