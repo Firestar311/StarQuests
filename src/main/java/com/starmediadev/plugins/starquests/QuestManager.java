@@ -4,6 +4,9 @@ import com.starmediadev.plugins.starquests.objects.Quest;
 import com.starmediadev.plugins.starquests.objects.QuestObject;
 import com.starmediadev.plugins.starquests.storage.StorageHandler;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class QuestManager {
     
     private StorageHandler storageHandler;
@@ -21,6 +24,10 @@ public class QuestManager {
     }
     
     public Quest getQuest(String questId) {
-        return null;
+        return null; //TODO
+    }
+    
+    public List<Quest> getQuests() {
+        return new ArrayList<>(); //TODO
     }
 }

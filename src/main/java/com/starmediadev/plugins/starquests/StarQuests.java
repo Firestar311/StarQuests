@@ -20,6 +20,7 @@ public class StarQuests extends JavaPlugin {
         StorageHandler storageHandler = new StorageHandler();
         questManager = new QuestManager(storageHandler);
         getServer().getServicesManager().register(QuestManager.class, questManager, this, ServicePriority.Highest);
+        getServer().getPluginManager().registerEvents(new ActionListener(), this);
     }
     
     public QuestManager getQuestManager() {

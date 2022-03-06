@@ -9,7 +9,7 @@ import net.citizensnpcs.api.event.NPCClickEvent;
 import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.entity.Player;
 
-public abstract class NPCClickAction extends QuestAction<NPCClickEvent> {
+public class NPCClickAction extends QuestAction<NPCClickEvent> {
     
     private IncrementalMap<String> dialogText;
     private long delayInTicks;

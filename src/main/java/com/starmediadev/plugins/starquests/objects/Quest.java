@@ -19,4 +19,12 @@ public class Quest extends QuestObject {
     public boolean isComplete(UUID player) {
         return false;
     }
+    
+    public Set<QuestObjective> getObjectives() {
+        return new HashSet<>(objectives);
+    }
+    
+    public Set<QuestReward> getRewards() {
+        return new HashSet<>(rewards);
+    }
 }
