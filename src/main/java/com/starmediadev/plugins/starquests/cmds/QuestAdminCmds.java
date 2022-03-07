@@ -10,6 +10,7 @@ import com.starmediadev.plugins.starquests.objects.actions.BlockBreakAction;
 import com.starmediadev.plugins.starquests.objects.actions.EntityKillAction;
 import com.starmediadev.plugins.starquests.objects.rewards.ItemReward;
 import org.bukkit.Material;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -25,6 +26,7 @@ public class QuestAdminCmds {
     private StarQuests plugin;
     
     @Subcommand("test create")
+    @CommandPermission("starquests.command.admin.test.create")
     public void createTest(Player player) {
         QuestManager questManager = plugin.getQuestManager();
         QuestLine.Builder questLineBuilder = new QuestLine.Builder(questManager, QuestUtils.generateQuestLineId()).active(true).description("A questline for testing.")
@@ -50,5 +52,11 @@ public class QuestAdminCmds {
         secondQuest.addRequiredQuestObject(firstQuest);
         questManager.add(secondQuest);
         questLine.addQuest(secondQuest);
+    }
+    
+    @Subcommand("save")
+    @CommandPermission("starquests.command.admin.save")
+    public void save(CommandSender sender) {
+        plugin.getQuestManager().getStorageHandler().saveData();
     }
 }

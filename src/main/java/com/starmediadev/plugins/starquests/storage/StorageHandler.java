@@ -21,4 +21,10 @@ public interface StorageHandler {
     boolean isQuestComplete(UUID uniqueId, String id);
     
     boolean isQuestObjectiveComplete(UUID uniqueId, String questId, String objectiveId);
+    
+    void setup();
+    
+    void saveData();
+    
+    void loadData();
 }

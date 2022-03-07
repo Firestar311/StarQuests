@@ -19,6 +19,7 @@ public class StarQuests extends JavaPlugin {
     
     private QuestManager questManager;
     
+    @Override
     public void onEnable() {
         instance = this;
         saveDefaultConfig();
@@ -31,6 +32,14 @@ public class StarQuests extends JavaPlugin {
         commandHandler.registerDependency(StarQuests.class, this);
         commandHandler.register(new QuestAdminCmds());
         commandHandler.register(new QuestCommands());
+        
+        storageHandler.setup();
+        storageHandler.loadData();
+    }
+    
+    @Override
+    public void onDisable() {
+        questManager.getStorageHandler().saveData();
     }
     
     public QuestManager getQuestManager() {
