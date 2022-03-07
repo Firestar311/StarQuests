@@ -10,6 +10,7 @@ import com.starmediadev.plugins.starquests.objects.rewards.ItemReward;
 import com.starmediadev.plugins.starquests.storage.StorageHandler;
 import com.starmediadev.plugins.starquests.storage.YamlStorageHandler;
 import com.starmediadev.plugins.starquests.cmds.QuestAdminCmds;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
@@ -44,6 +45,8 @@ public class StarQuests extends JavaPlugin {
         
         storageHandler.setup();
         storageHandler.loadData();
+    
+        Bukkit.getScheduler().runTaskTimer(this, storageHandler::saveData, 1L, 6000L);
     
         QuestLine.Builder questLineBuilder = new QuestLine.Builder(questManager, QuestUtils.generateQuestLineId()).active(true).description("A questline for testing.")
                 .displayName("Test Quest Line");
