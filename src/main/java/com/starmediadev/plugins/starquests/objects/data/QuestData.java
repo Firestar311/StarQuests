@@ -13,6 +13,12 @@ public abstract class QuestData {
         this.uniqueId = uniqueId;
     }
     
+    protected QuestData() {
+        this.questId = null;
+        this.questObjectiveId = null;
+        this.uniqueId = null;
+    }
+    
     public String getQuestId() {
         return questId;
     }

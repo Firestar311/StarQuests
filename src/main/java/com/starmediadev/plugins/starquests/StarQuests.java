@@ -50,20 +50,20 @@ public class StarQuests extends JavaPlugin {
         QuestLine questLine = questLineBuilder.build();
         questManager.add(questLine);
     
-        Quest.Builder questBuilder = new Quest.Builder(questManager, QuestUtils.generateQuestId()).active(true);
+        Quest.Builder questBuilder = new Quest.Builder(questManager, "abcdef").active(true);
         questBuilder.description("The first of the test quests").displayName("First Quest").addReward(new ItemReward.Builder().id("goldreward").displayName("10 Gold")
                 .itemStack(new ItemStack(Material.GOLD_INGOT, 10)).build());
     
-        QuestObjective.Builder objectiveBuilder = new QuestObjective.Builder(QuestUtils.generateObjectiveId());
+        QuestObjective.Builder objectiveBuilder = new QuestObjective.Builder("ghigklmnopkr");
         questBuilder.addObjective(objectiveBuilder.displayName("Break 5 Stone").action(new BlockBreakAction(Material.STONE, 5)).build());
-        questBuilder.addObjective(objectiveBuilder.id(QuestUtils.generateObjectiveId()).displayName("Break 5 Dirt").action(new BlockBreakAction(Material.DIRT, 5)).build());
+        questBuilder.addObjective(objectiveBuilder.id("stuvwzyzaabb").displayName("Break 5 Dirt").action(new BlockBreakAction(Material.DIRT, 5)).build());
     
         Quest firstQuest = questBuilder.build();
         questManager.add(firstQuest);
         questLine.addQuest(firstQuest);
     
-        questBuilder.clearObjectives().clearRewards().id(QuestUtils.generateQuestId()).displayName("Second Quest").description("The second test quest.")
-                .addObjective(objectiveBuilder.id(QuestUtils.generateObjectiveId()).displayName("Kill 5 Zombies").action(new EntityKillAction(EntityType.ZOMBIE, 5)).build());
+        questBuilder.clearObjectives().clearRewards().id("ccddee").displayName("Second Quest").description("The second test quest.")
+                .addObjective(objectiveBuilder.id("ffgghhiijjkk").displayName("Kill 5 Zombies").action(new EntityKillAction(EntityType.ZOMBIE, 5)).build());
         Quest secondQuest = questBuilder.build();
         secondQuest.addRequiredQuestObject(firstQuest);
         questManager.add(secondQuest);

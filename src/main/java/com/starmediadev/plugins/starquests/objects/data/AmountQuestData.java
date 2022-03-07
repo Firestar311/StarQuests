@@ -9,6 +9,9 @@ public class AmountQuestData extends QuestData {
         super(questId, questObjectiveId, uniqueId);
     }
     
+    private AmountQuestData() {
+    }
+    
     public void increment() {
         amount++;
     }
