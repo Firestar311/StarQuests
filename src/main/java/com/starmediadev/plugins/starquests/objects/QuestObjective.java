@@ -32,9 +32,8 @@ public class QuestObjective {
         return questId;
     }
     
-    public QuestObjective setQuestId(String questId) {
+    public void setQuestId(String questId) {
         this.questId = questId;
-        return this;
     }
     
     public String getDisplayName() {
