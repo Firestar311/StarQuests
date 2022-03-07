@@ -57,14 +57,14 @@ public class QuestCommands {
             throw new CommandErrorException("Could not find an available quest.");
         }
         
-        player.sendMessage(MCUtils.color("Quest: " + quest.getDisplayName()));
+        player.sendMessage(MCUtils.color("Quest: " + quest.getTitle()));
         if (!StringHelper.isEmpty(quest.getDescription())) {
             player.sendMessage(MCUtils.color("Description: " + quest.getDescription()));
         }
         
         player.sendMessage(MCUtils.color("Objectives"));
         for (QuestObjective objective : quest.getObjectives()) {
-            player.sendMessage(MCUtils.color("- " + ((objective.isComplete(player.getUniqueId()) ? "&a" : "&c")) + objective.getDisplayName()));
+            player.sendMessage(MCUtils.color("- " + ((objective.isComplete(player.getUniqueId()) ? "&a" : "&c")) + objective.getTitle()));
             if (!StringHelper.isEmpty(objective.getDescription())) {
                 player.sendMessage(MCUtils.color("  Description: " + objective.getDescription()));
             }
@@ -72,7 +72,7 @@ public class QuestCommands {
     
         player.sendMessage(MCUtils.color("Rewards"));
         for (QuestReward reward : quest.getRewards()) {
-            player.sendMessage(MCUtils.color("- " + reward.getDisplayName()));
+            player.sendMessage(MCUtils.color("- " + reward.getTitle()));
         }
     }
 }

@@ -1,5 +1,6 @@
 package com.starmediadev.plugins.starquests.objects;
 
+import com.starmediadev.plugins.starmcutils.util.ColorUtils;
 import com.starmediadev.plugins.starquests.QuestManager;
 import com.starmediadev.plugins.starquests.objects.interfaces.QuestRequirement;
 
@@ -13,7 +14,7 @@ import java.util.UUID;
 public abstract class QuestObject {
     protected final QuestManager questManager;
     protected final String id;
-    protected String displayName, description;
+    protected String title, name, description;
     protected boolean repeatable, active;
     protected Set<String> requiredQuestObjects, optionalQuestObjects;
     protected Set<QuestRequirement> otherRequirements;
@@ -21,7 +22,8 @@ public abstract class QuestObject {
     protected QuestObject(Builder<?, ?> builder) {
         questManager = builder.questManager;
         id = builder.id;
-        displayName = builder.displayName;
+        title = builder.title;
+        name = builder.name;
         description = builder.description;
         repeatable = builder.repeatable;
         active = builder.active;
@@ -38,12 +40,12 @@ public abstract class QuestObject {
         return id;
     }
     
-    public String getDisplayName() {
-        return displayName;
+    public String getTitle() {
+        return title;
     }
     
-    public void setDisplayName(String displayName) {
-        this.displayName = displayName;
+    public void setTitle(String title) {
+        this.title = title;
     }
     
     public String getDescription() {
@@ -84,6 +86,15 @@ public abstract class QuestObject {
     
     public abstract boolean isComplete(UUID player);
     
+    public String getName() {
+        return name;
+    }
+    
+    public QuestObject setName(String name) {
+        this.name = name;
+        return this;
+    }
+    
     public boolean isAvailable(UUID player) {
         if (!isActive()) {
             return false;
@@ -117,10 +128,11 @@ public abstract class QuestObject {
     protected static abstract class Builder<Q extends QuestObject, B extends QuestObject.Builder<Q, B>> {
         protected final QuestManager questManager;
         protected String id;
-        protected String displayName, description;
+        protected String title, name, description;
         protected boolean repeatable, active;
         protected Set<String> requiredQuestObjects = new HashSet<>(), optionalQuestObjects = new HashSet<>();
         protected Set<QuestRequirement> otherRequirements = new HashSet<>();
+        
         public Builder(QuestManager questManager, String id) {
             this.questManager = questManager;
             this.id = id;
@@ -130,22 +142,22 @@ public abstract class QuestObject {
             this.id = id;
             return (B) this;
         }
-    
-        public B displayName(String displayName) {
-            this.displayName = displayName;
+        
+        public B title(String title) {
+            this.title = title;
             return (B) this;
         }
-    
+        
         public B description(String description) {
             this.description = description;
             return (B) this;
         }
-    
+        
         public B repeatable(boolean repeatable) {
             this.repeatable = repeatable;
             return (B) this;
         }
-    
+        
         public B active(boolean active) {
             this.active = active;
             return (B) this;
@@ -155,7 +167,7 @@ public abstract class QuestObject {
             this.requiredQuestObjects.add(object.getId());
             return (B) this;
         }
-    
+        
         public B addOptionalQuestObject(QuestObject object) {
             this.optionalQuestObjects.add(object.getId());
             return (B) this;
@@ -163,6 +175,17 @@ public abstract class QuestObject {
         
         public B addRequirement(QuestRequirement requirement) {
             this.otherRequirements.add(requirement);
+            return (B) this;
+        }
+        
+        public B name(String name) {
+            this.name = name;
+            return (B) this;
+        }
+        
+        public B nameFromTitle() {
+            this.name = title.toLowerCase().replace(" ", "_");
+            this.name = ColorUtils.stripColor(this.name);
             return (B) this;
         }
         

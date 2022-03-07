@@ -49,24 +49,24 @@ public class StarQuests extends JavaPlugin {
         Bukkit.getScheduler().runTaskTimer(this, storageHandler::saveData, 1L, 6000L);
     
         QuestLine.Builder questLineBuilder = new QuestLine.Builder(questManager, QuestUtils.generateQuestLineId()).active(true).description("A questline for testing.")
-                .displayName("Test Quest Line");
+                .title("Test Quest Line");
         QuestLine questLine = questLineBuilder.build();
         questManager.add(questLine);
     
         Quest.Builder questBuilder = new Quest.Builder(questManager, "abcdef").active(true);
-        questBuilder.description("The first of the test quests").displayName("First Quest").addReward(new ItemReward.Builder().id("goldreward").displayName("10 Gold")
+        questBuilder.description("The first of the test quests").title("First Quest").addReward(new ItemReward.Builder().id("goldreward").title("10 Gold")
                 .itemStack(new ItemStack(Material.GOLD_INGOT, 10)).build());
     
         QuestObjective.Builder objectiveBuilder = new QuestObjective.Builder("ghigklmnopkr");
-        questBuilder.addObjective(objectiveBuilder.displayName("Break 5 Stone").action(new BlockBreakAction(Material.STONE, 5)).build());
-        questBuilder.addObjective(objectiveBuilder.id("stuvwzyzaabb").displayName("Break 5 Dirt").action(new BlockBreakAction(Material.DIRT, 5)).build());
+        questBuilder.addObjective(objectiveBuilder.title("Break 5 Stone").action(new BlockBreakAction(Material.STONE, 5)).build());
+        questBuilder.addObjective(objectiveBuilder.id("stuvwzyzaabb").title("Break 5 Dirt").action(new BlockBreakAction(Material.DIRT, 5)).build());
     
         Quest firstQuest = questBuilder.build();
         questManager.add(firstQuest);
         questLine.addQuest(firstQuest);
     
-        questBuilder.clearObjectives().clearRewards().id("ccddee").displayName("Second Quest").description("The second test quest.")
-                .addObjective(objectiveBuilder.id("ffgghhiijjkk").displayName("Kill 5 Zombies").action(new EntityKillAction(EntityType.ZOMBIE, 5)).build());
+        questBuilder.clearObjectives().clearRewards().id("ccddee").title("Second Quest").description("The second test quest.")
+                .addObjective(objectiveBuilder.id("ffgghhiijjkk").title("Kill 5 Zombies").action(new EntityKillAction(EntityType.ZOMBIE, 5)).build());
         Quest secondQuest = questBuilder.build();
         secondQuest.addRequiredQuestObject(firstQuest);
         questManager.add(secondQuest);

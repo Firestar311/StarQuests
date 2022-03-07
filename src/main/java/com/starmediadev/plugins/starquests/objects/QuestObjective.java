@@ -1,5 +1,6 @@
 package com.starmediadev.plugins.starquests.objects;
 
+import com.starmediadev.plugins.starmcutils.util.ColorUtils;
 import com.starmediadev.plugins.starmcutils.util.MCUtils;
 import com.starmediadev.plugins.starquests.QuestManager;
 import com.starmediadev.plugins.starquests.StarQuests;
@@ -14,14 +15,15 @@ public class QuestObjective {
     protected final String id;
     protected String questId;
     protected final QuestAction<?> questAction;
-    protected String displayName, description;
+    protected String title, name, description;
     
     private QuestObjective(Builder builder) {
         this.id = builder.id;
         this.questId = builder.questId;
         this.questAction = builder.questAction;
-        this.displayName = builder.displayName;
+        this.title = builder.title;
         this.description = builder.description;
+        this.name = builder.name;
     }
     
     public String getId() {
@@ -36,12 +38,21 @@ public class QuestObjective {
         this.questId = questId;
     }
     
-    public String getDisplayName() {
-        return displayName;
+    public String getTitle() {
+        return title;
     }
     
-    public void setDisplayName(String displayName) {
-        this.displayName = displayName;
+    public void setTitle(String title) {
+        this.title = title;
+    }
+    
+    public String getName() {
+        return name;
+    }
+    
+    public QuestObjective setName(String name) {
+        this.name = name;
+        return this;
     }
     
     public String getDescription() {
@@ -63,12 +74,12 @@ public class QuestObjective {
         storageHandler.setCompletedObjective(uniqueId, quest, this);
         Player player = Bukkit.getPlayer(uniqueId);
         if (player != null) {
-            player.sendMessage(MCUtils.color("Completed Objective: " + getDisplayName()));
+            player.sendMessage(MCUtils.color("Completed Objective: " + getTitle()));
         }
         if (quest.isComplete(uniqueId)) {
             storageHandler.setCompletedQuest(uniqueId, quest);
             if (player != null) {
-                player.sendMessage(MCUtils.color("Completed Quest: " + quest.getDisplayName()));
+                player.sendMessage(MCUtils.color("Completed Quest: " + quest.getTitle()));
                 quest.getRewards().forEach(reward -> {
                     try {
                         reward.applyReward(player);
@@ -92,7 +103,7 @@ public class QuestObjective {
     public static class Builder {
         protected String id, questId;
         protected QuestAction<?> questAction;
-        protected String displayName, description;
+        protected String title, name, description;
         
         public Builder(String id) {
             this.id = id;
@@ -113,13 +124,19 @@ public class QuestObjective {
             return this;
         }
     
-        public Builder displayName(String displayName) {
-            this.displayName = displayName;
+        public Builder title(String title) {
+            this.title = title;
             return this;
         }
     
         public Builder description(String description) {
             this.description = description;
+            return this;
+        }
+    
+        public Builder nameFromTitle() {
+            this.name = title.toLowerCase().replace(" ", "_");
+            this.name = ColorUtils.stripColor(this.name);
             return this;
         }
         
