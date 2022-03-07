@@ -1,5 +1,6 @@
 package com.starmediadev.plugins.starquests.objects.data;
 
+import java.util.Objects;
 import java.util.UUID;
 
 public abstract class QuestData {
@@ -22,5 +23,20 @@ public abstract class QuestData {
     
     public UUID getUniqueId() {
         return uniqueId;
+    }
+    
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
+        QuestData questData = (QuestData) o;
+        return Objects.equals(questId, questData.questId) && Objects.equals(questObjectiveId, questData.questObjectiveId) && Objects.equals(uniqueId, questData.uniqueId);
+    }
+    
+    @Override
+    public int hashCode() {
+        return Objects.hash(questId, questObjectiveId, uniqueId);
     }
 }

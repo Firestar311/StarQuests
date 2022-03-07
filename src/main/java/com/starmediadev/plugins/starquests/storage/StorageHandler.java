@@ -14,6 +14,10 @@ public interface StorageHandler {
     
     void removeQuestData(UUID uniqueId, Quest quest, QuestObjective questObjective);
     
+    void removeCompletedObjectives(UUID uniqueId, Quest quest);
+    
+    void removeCompletedObjective(UUID uuid, Quest quest, QuestObjective questObjective);
+    
     void setCompletedObjective(UUID uniqueId, Quest quest, QuestObjective questObjective);
     
     void setCompletedQuest(UUID uniqueId, Quest quest);

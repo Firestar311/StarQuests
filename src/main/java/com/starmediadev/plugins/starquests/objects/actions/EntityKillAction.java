@@ -16,9 +16,8 @@ public class EntityKillAction extends EventAmountAction<EntityType, AmountQuestD
     protected int handleEvent(EntityDeathEvent event, Quest quest, QuestObjective questObjective, StorageHandler storageHandler, AmountQuestData questData) {
         if (questData == null) {
             questData = new AmountQuestData(quest.getId(), questObjective.getId(), event.getEntity().getKiller().getUniqueId());
+            storageHandler.addQuestData(event.getEntity().getKiller().getUniqueId(), questData);
         }
-    
-        storageHandler.addQuestData(event.getEntity().getKiller().getUniqueId(), questData);
     
         EntityType type = event.getEntityType();
         if (this.type == type) {

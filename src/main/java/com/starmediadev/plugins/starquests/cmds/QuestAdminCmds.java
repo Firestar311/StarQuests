@@ -25,35 +25,6 @@ public class QuestAdminCmds {
     @Dependency
     private StarQuests plugin;
     
-    @Subcommand("test create")
-    @CommandPermission("starquests.command.admin.test.create")
-    public void createTest(Player player) {
-        QuestManager questManager = plugin.getQuestManager();
-        QuestLine.Builder questLineBuilder = new QuestLine.Builder(questManager, QuestUtils.generateQuestLineId()).active(true).description("A questline for testing.")
-                .displayName("Test Quest Line");
-        QuestLine questLine = questLineBuilder.build();
-        questManager.add(questLine);
-    
-        Quest.Builder questBuilder = new Quest.Builder(questManager, QuestUtils.generateQuestId()).active(true);
-        questBuilder.description("The first of the test quests").displayName("First Quest").addReward(new ItemReward.Builder().id("goldreward").displayName("10 Gold")
-                .itemStack(new ItemStack(Material.GOLD_INGOT, 10)).build());
-        
-        QuestObjective.Builder objectiveBuilder = new QuestObjective.Builder(QuestUtils.generateObjectiveId());
-        questBuilder.addObjective(objectiveBuilder.displayName("Break 10 Stone").action(new BlockBreakAction(Material.STONE, 10)).build());
-        questBuilder.addObjective(objectiveBuilder.id(QuestUtils.generateObjectiveId()).displayName("Break 20 Dirt").action(new BlockBreakAction(Material.DIRT, 20)).build());
-    
-        Quest firstQuest = questBuilder.build();
-        questManager.add(firstQuest);
-        questLine.addQuest(firstQuest);
-        
-        questBuilder.clearObjectives().clearRewards().id(QuestUtils.generateQuestId()).displayName("Second Quest").description("The second test quest.")
-                .addObjective(objectiveBuilder.id(QuestUtils.generateObjectiveId()).displayName("Kill 20 Zombies").action(new EntityKillAction(EntityType.ZOMBIE, 20)).build());
-        Quest secondQuest = questBuilder.build();
-        secondQuest.addRequiredQuestObject(firstQuest);
-        questManager.add(secondQuest);
-        questLine.addQuest(secondQuest);
-    }
-    
     @Subcommand("save")
     @CommandPermission("starquests.command.admin.save")
     public void save(CommandSender sender) {

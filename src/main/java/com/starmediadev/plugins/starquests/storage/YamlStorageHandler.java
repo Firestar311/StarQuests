@@ -24,7 +24,23 @@ public class YamlStorageHandler implements StorageHandler {
     
     @Override
     public void addQuestData(UUID uniqueId, QuestData value) {
-        questDataMap.add(uniqueId, value);
+        List<QuestData> questDataList = questDataMap.get(uniqueId);
+        if (questDataList == null || questDataList.isEmpty()) {
+            questDataMap.add(uniqueId, value);
+        } else {
+            boolean hasMatch = false;
+            for (QuestData questData : questDataList) {
+                if (questData.equals(value)) {
+                    hasMatch = true;
+                    break;
+                }
+            }
+            
+            if (hasMatch) {
+                int index = questDataList.indexOf(value);
+                questDataList.set(index, value);
+            }
+        }
     }
     
     @Override
@@ -42,7 +58,36 @@ public class YamlStorageHandler implements StorageHandler {
     @Override
     public void removeQuestData(UUID uniqueId, Quest quest, QuestObjective questObjective) {
         if (questDataMap.containsKey(uniqueId)) {
-            questDataMap.get(uniqueId).removeIf(questData -> questData.getQuestId().equals(quest.getId()) && questData.getQuestObjectiveId().equals(questObjective.getId()));
+            List<QuestData> questDataList = questDataMap.get(uniqueId);
+            QuestData toRemove = null;
+            for (QuestData questData : questDataList) {
+                if (questData.getQuestId().equals(quest.getId()) && questData.getQuestObjectiveId().equals(questObjective.getId())) {
+                    toRemove = questData;
+                    break;
+                }
+            }
+            
+            if (toRemove != null) {
+                questDataList.remove(toRemove);
+            }
+            questDataMap.put(uniqueId, questDataList);
+        }
+    }
+    
+    @Override
+    public void removeCompletedObjectives(UUID uniqueId, Quest quest) {
+        Map<String, List<String>> allCompletedObjectives = this.completedQuestObjectives.get(uniqueId);
+        if (allCompletedObjectives != null && !allCompletedObjectives.isEmpty()) {
+            allCompletedObjectives.remove(quest.getId());
+        }
+    }
+    
+    @Override
+    public void removeCompletedObjective(UUID uuid, Quest quest, QuestObjective questObjective) {
+        Map<String, List<String>> allCompletedObjectives = this.completedQuestObjectives.get(uuid);
+        if (allCompletedObjectives != null && !allCompletedObjectives.isEmpty()) {
+            List<String> completedObjectives = allCompletedObjectives.get(quest.getId());
+            completedObjectives.remove(questObjective.getId());
         }
     }
     
@@ -54,11 +99,16 @@ public class YamlStorageHandler implements StorageHandler {
             completedQuestObjectives.put(uniqueId, quest.getId(), completedObjectives);
         }
         completedObjectives.add(questObjective.getId());
+        removeQuestData(uniqueId, quest, questObjective);
     }
     
     @Override
     public void setCompletedQuest(UUID uniqueId, Quest quest) {
         completedQuests.add(uniqueId, quest.getId());
+        for (QuestObjective objective : quest.getObjectives()) {
+            removeQuestData(uniqueId, quest, objective);
+        }
+        removeCompletedObjectives(uniqueId, quest);
     }
     
     @Override
@@ -93,6 +143,15 @@ public class YamlStorageHandler implements StorageHandler {
     
     @Override
     public void saveData() {
+        completedQuestsConfig.set("players", null);
+        completedQuestsConfig.save();
+        
+        completedQuestObjectivesConfig.set("players", null);
+        completedQuestObjectivesConfig.save();
+        
+        questDataConfig.set("players", null);
+        questDataConfig.save();
+        
         completedQuests.forEach((player, questsCompleted) -> completedQuestsConfig.set("players." + player.toString(), questsCompleted));
     
         for (UUID player : completedQuestObjectives.keySet()) {
@@ -115,16 +174,25 @@ public class YamlStorageHandler implements StorageHandler {
                     }
     
                     try {
-                        data.put(field.getName(), field.get(questData));
+                        Object value;
+                        if (UUID.class.isAssignableFrom(field.getType())) {
+                            value = field.get(questData).toString();
+                        } else {
+                            value = field.get(questData);
+                        }
+                        data.put(field.getName(), value);
                     } catch (IllegalAccessException e) {
                         e.printStackTrace();
                     }
                 }
                 
-                data.forEach((key, value) -> questDataConfig.set("players." + player.toString() + ".quests." + questData.getQuestId() + ".objectives." + questData.getQuestObjectiveId() + ".data." + key, data));
+                data.forEach((key, value) -> questDataConfig.set("players." + player.toString() + ".quests." + questData.getQuestId() + ".objectives." + questData.getQuestObjectiveId() + ".data." + key, value));
             }
         });
         
+        this.completedQuestsConfig.save();
+        this.completedQuestObjectivesConfig.save();
+        this.questDataConfig.save();
     }
     
     @Override
