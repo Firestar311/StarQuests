@@ -4,18 +4,26 @@ import com.starmediadev.plugins.starquests.objects.Quest;
 import com.starmediadev.plugins.starquests.objects.QuestLine;
 import com.starmediadev.plugins.starquests.objects.QuestObject;
 import com.starmediadev.plugins.starquests.objects.QuestObjective;
+import com.starmediadev.plugins.starquests.objects.registry.QuestLineRegistry;
+import com.starmediadev.plugins.starquests.objects.registry.QuestRegistry;
 import com.starmediadev.plugins.starquests.storage.StorageHandler;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 public class QuestManager {
     
     private StorageHandler storageHandler;
-    private Map<String, QuestObject> questObjects = new HashMap<>();
+    
+    private QuestLineRegistry questLineRegistry;
+    private QuestRegistry questRegistry;
     
     public QuestManager(StorageHandler storageHandler) {
         this.storageHandler = storageHandler;
+        questLineRegistry = new QuestLineRegistry(this);
+        questRegistry = new QuestRegistry(this);
     }
     
     public StorageHandler getStorageHandler() {
@@ -23,22 +31,36 @@ public class QuestManager {
     }
     
     public QuestObject get(String id) {
-        return questObjects.get(id);
+        QuestLine questLine = questLineRegistry.get(id);
+        if (questLine != null) {
+            return questLine;
+        }
+    
+        return questRegistry.get(id);
+    }
+    
+    public QuestRegistry getQuestRegistry() {
+        return questRegistry;
+    }
+    
+    public QuestLineRegistry getQuestLineRegistry() {
+        return questLineRegistry;
     }
     
     public Quest getQuest(String questId) {
-        if (QuestUtils.isQuestId(questId)) {
-            return (Quest) questObjects.get(questId);
-        }
-        return null;
+        return questRegistry.get(questId);
     }
     
     public List<Quest> getQuests() {
-        return this.questObjects.values().stream().filter(value -> value instanceof Quest).map(value -> (Quest) value).collect(Collectors.toList());
+        return questRegistry.getAllRegistered();
     }
     
     public void add(QuestObject questObject) {
-        questObjects.put(questObject.getId(), questObject);
+        if (questObject instanceof QuestLine questLine) {
+            questLineRegistry.register(questLine);
+        } else if (questObject instanceof Quest quest) {
+            questRegistry.register(quest);
+        }
     }
     
     public boolean isQuestComplete(UUID uuid, Quest quest) {
@@ -50,6 +72,6 @@ public class QuestManager {
     }
     
     public List<QuestLine> getQuestLines() {
-        return this.questObjects.values().stream().filter(value -> value instanceof QuestLine).map(value -> (QuestLine) value).collect(Collectors.toList());
+        return questLineRegistry.getAllRegistered();
     }
 }

@@ -3,26 +3,4 @@ version: ${project.version}
 name: ${project.name}
 api-version: 1.18
 description: ${project.description}
-depend: [StarMCUtils,Citizens]
-commands: 
-    kill:
-    killall:
-    clearinv:
-    inventorysee:
-        aliases: [invsee]
-    enderchest:
-        aliases: [echest]
-    workbench:
-        aliases: [wb]
-    trash:
-    top:
-    spawnmob:
-        aliases: [spawnentity]
-    weather:
-    time:
-    spawner:
-    sethome:
-    delhome:
-    home:
-    listhomes:
-    renamehome:
+depend: [StarMCUtils]

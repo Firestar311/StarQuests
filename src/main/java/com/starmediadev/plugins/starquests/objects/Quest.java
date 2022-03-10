@@ -1,6 +1,5 @@
 package com.starmediadev.plugins.starquests.objects;
 
-import com.starmediadev.plugins.starquests.QuestManager;
 import com.starmediadev.plugins.starquests.objects.rewards.QuestReward;
 
 import java.util.HashSet;
@@ -9,14 +8,11 @@ import java.util.UUID;
 
 public class Quest extends QuestObject {
     protected Set<QuestObjective> objectives = new HashSet<>();
-    protected Set<QuestReward> rewards;
+    protected Set<QuestReward> rewards = new HashSet<>();
     protected boolean optional;
     
-    private Quest(Quest.Builder builder) {
-        super(builder);
-        builder.objectives.forEach(this::addObjective);
-        rewards = new HashSet<>(builder.rewards);
-        optional = builder.optional;
+    private Quest(String id) {
+        super(id);
     }
     
     public void addObjective(QuestObjective objective) {
@@ -51,45 +47,5 @@ public class Quest extends QuestObject {
     
     public boolean isOptional() {
         return optional;
-    }
-    
-    public static class Builder extends QuestObject.Builder<Quest, Quest.Builder> {
-        protected Set<QuestObjective> objectives = new HashSet<>();
-        protected Set<QuestReward> rewards = new HashSet<>();
-        protected boolean optional;
-        
-        public Builder(QuestManager questManager, String id) {
-            super(questManager, id);
-        }
-        
-        public Builder optional(boolean optional) {
-            this.optional = optional;
-            return this;
-        }
-        
-        public Builder addObjective(QuestObjective objective) {
-            objectives.add(objective);
-            return this;
-        }
-        
-        public Builder addReward(QuestReward questReward) {
-            rewards.add(questReward);
-            return this;
-        }
-        
-        public Builder clearObjectives() {
-            objectives.clear();
-            return this;
-        }
-        
-        public Builder clearRewards() {
-            rewards.clear();
-            return this;
-        }
-    
-        @Override
-        public Quest build() {
-            return new Quest(this);
-        }
     }
 }

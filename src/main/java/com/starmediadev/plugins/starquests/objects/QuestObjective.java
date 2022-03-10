@@ -1,6 +1,5 @@
 package com.starmediadev.plugins.starquests.objects;
 
-import com.starmediadev.plugins.starmcutils.util.ColorUtils;
 import com.starmediadev.plugins.starmcutils.util.MCUtils;
 import com.starmediadev.plugins.starquests.QuestManager;
 import com.starmediadev.plugins.starquests.StarQuests;
@@ -11,19 +10,14 @@ import org.bukkit.entity.Player;
 
 import java.util.UUID;
 
-public class QuestObjective {
-    protected final String id;
+public class QuestObjective extends QuestObject {
     protected String questId;
     protected final QuestAction<?> questAction;
-    protected String title, name, description;
     
-    private QuestObjective(Builder builder) {
-        this.id = builder.id;
-        this.questId = builder.questId;
-        this.questAction = builder.questAction;
-        this.title = builder.title;
-        this.description = builder.description;
-        this.name = builder.name;
+    private QuestObjective(String id, String questId, QuestAction<?> questAction) {
+        super(id);
+        this.questId = questId;
+        this.questAction = questAction;
     }
     
     public String getId() {
@@ -98,50 +92,5 @@ public class QuestObjective {
             return true;
         }
         return questManager.isQuestObjectiveComplete(player, quest, this);
-    }
-    
-    public static class Builder {
-        protected String id, questId;
-        protected QuestAction<?> questAction;
-        protected String title, name, description;
-        
-        public Builder(String id) {
-            this.id = id;
-        }
-    
-        public Builder id(String id) {
-            this.id = id;
-            return this;
-        }
-    
-        public Builder questId(String questId) {
-            this.questId = questId;
-            return this;
-        }
-    
-        public Builder action(QuestAction<?> questAction) {
-            this.questAction = questAction;
-            return this;
-        }
-    
-        public Builder title(String title) {
-            this.title = title;
-            return this;
-        }
-    
-        public Builder description(String description) {
-            this.description = description;
-            return this;
-        }
-    
-        public Builder nameFromTitle() {
-            this.name = title.toLowerCase().replace(" ", "_");
-            this.name = ColorUtils.stripColor(this.name);
-            return this;
-        }
-        
-        public QuestObjective build() {
-            return new QuestObjective(this);
-        }
     }
 }
