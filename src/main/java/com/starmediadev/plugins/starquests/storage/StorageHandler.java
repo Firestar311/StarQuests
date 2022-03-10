@@ -3,7 +3,6 @@ package com.starmediadev.plugins.starquests.storage;
 import com.starmediadev.plugins.starquests.objects.Quest;
 import com.starmediadev.plugins.starquests.objects.QuestLine;
 import com.starmediadev.plugins.starquests.objects.QuestObjective;
-import com.starmediadev.plugins.starquests.objects.actions.QuestAction;
 import com.starmediadev.plugins.starquests.objects.data.QuestData;
 
 import java.util.UUID;
@@ -29,7 +28,7 @@ public interface StorageHandler {
     
     void setCompletedQuestLine(UUID uniqueId, QuestLine questLine);
     
-    boolean isCompletedQuestLine(UUID uuid, QuestLine questLine);
+    boolean isQuestLineComplete(UUID uuid, QuestLine questLine);
     
     void setup();
     

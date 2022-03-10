@@ -2,16 +2,13 @@ package com.starmediadev.plugins.starquests.objects.registry;
 
 import com.starmediadev.plugins.starquests.QuestManager;
 import com.starmediadev.plugins.starquests.QuestUtils;
-import com.starmediadev.plugins.starquests.objects.Quest;
+import com.starmediadev.plugins.starquests.objects.QuestObjective;
 
-/**
- * Registry for quests
- */
-public class QuestRegistry extends QuestObjectRegistry<Quest> {
+public class QuestObjectiveRegistry extends QuestObjectRegistry<QuestObjective> {
     /**
      * {@inheritDoc}
      */
-    public QuestRegistry(QuestManager questManager) {
+    public QuestObjectiveRegistry(QuestManager questManager) {
         super(questManager);
     }
     
@@ -20,6 +17,6 @@ public class QuestRegistry extends QuestObjectRegistry<Quest> {
      */
     @Override
     public boolean isValidId(String id) {
-        return QuestUtils.isQuestId(id);
+        return QuestUtils.isObjectiveId(id);
     }
 }

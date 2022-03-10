@@ -1,12 +1,16 @@
 package com.starmediadev.plugins.starquests.objects;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import com.starmediadev.plugins.starmcutils.util.MCUtils;
+import com.starmediadev.plugins.starquests.QuestManager;
+import com.starmediadev.plugins.starquests.StarQuests;
+import com.starmediadev.plugins.starquests.storage.StorageHandler;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
+
+import java.util.*;
 
 public class QuestLine extends QuestObject {
-    protected Set<String> lineQuests = new HashSet<>();
+    protected Set<Quest> quests = new HashSet<>();
     
     private QuestLine(String id) {
         super(id);
@@ -20,10 +24,16 @@ public class QuestLine extends QuestObject {
     
     @Override
     public boolean isComplete(UUID player) {
-        List<Quest> quests = getQuests();
-        for (Quest quest : quests) {
-            if (!quest.isOptional()) {
-                if (!quest.isComplete(player)) {
+        if (questManager.isQuestLineComplete(player, this)) {
+            return true;
+        }
+        for (Quest quest : getQuests()) {
+            if (!quest.isComplete(player)) {
+                return false;
+            }
+            
+            for (QuestObject sideQuestObject : sideQuestObjects) {
+                if (!sideQuestObject.isComplete(player)) {
                     return false;
                 }
             }
@@ -31,13 +41,41 @@ public class QuestLine extends QuestObject {
         return true;
     }
     
+    public boolean isRequiredQuestsComplete(UUID player) {
+        for (Quest quest : getQuests()) {
+            if (!quest.isComplete(player)) {
+                return false;
+            }
+        }
+        
+        return true;
+    }
+    
+    @Override
+    public void complete(UUID uniqueId) {
+        QuestManager questManager = StarQuests.getInstance().getQuestManager();
+        StorageHandler storageHandler = questManager.getStorageHandler();
+        if (!storageHandler.isQuestLineComplete(uniqueId, this)) {
+            storageHandler.setCompletedQuestLine(uniqueId, this);
+            Player player = Bukkit.getPlayer(uniqueId);
+            if (player != null) {
+                player.sendMessage(MCUtils.color("Completed Quest Line: " + getTitle()));
+                getRewards().forEach(reward -> {
+                    try {
+                        reward.applyReward(player);
+                    } catch (Exception e) {
+                        player.sendMessage(MCUtils.color("&cError applying reward " + e.getMessage()));
+                    }
+                });
+            }
+        }
+    }
+    
     public List<Quest> getQuests() {
-        List<Quest> quests = questManager.getQuests();
-        quests.removeIf(quest -> !lineQuests.contains(quest.getId()));
-        return quests;
+        return new ArrayList<>(quests);
     }
     
     public void addQuest(Quest quest) {
-        this.lineQuests.add(quest.getId());   
+        this.quests.add(quest);
     }
 }

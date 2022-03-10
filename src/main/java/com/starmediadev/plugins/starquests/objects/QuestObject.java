@@ -1,8 +1,13 @@
 package com.starmediadev.plugins.starquests.objects;
 
 import com.starmediadev.plugins.starmcutils.util.ColorUtils;
+import com.starmediadev.plugins.starmcutils.util.MCUtils;
 import com.starmediadev.plugins.starquests.QuestManager;
+import com.starmediadev.plugins.starquests.StarQuests;
 import com.starmediadev.plugins.starquests.objects.rewards.QuestReward;
+import com.starmediadev.plugins.starquests.storage.StorageHandler;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 
 import java.util.HashSet;
 import java.util.List;
@@ -10,7 +15,7 @@ import java.util.Set;
 import java.util.UUID;
 
 /**
- * The parent object for all base quest based objects like QuestLine, QuestPool and Quest
+ * The parent object for all base quest based objects that have an action of sorts
  */
 public abstract class QuestObject {
     protected final String id;
@@ -21,7 +26,7 @@ public abstract class QuestObject {
     protected final Set<QuestRequirement> requirements = new HashSet<>();
     protected final Set<QuestReward> rewards = new HashSet<>();
     
-    protected QuestObject(String id) {
+    public QuestObject(String id) {
         this.id = id;
     }
     
@@ -100,6 +105,28 @@ public abstract class QuestObject {
         this.rewards.addAll(rewards);
     }
     
+    public boolean meetsPrequisites(UUID player) {
+        if (prerequisiteObjects != null && !prerequisiteObjects.isEmpty()) {
+            for (QuestObject questObject : this.prerequisiteObjects) {
+                if (!questObject.isComplete(player)) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+    
+    public boolean meetsRequirements(UUID player) {
+        if (this.requirements != null && !this.requirements.isEmpty()) {
+            for (QuestRequirement requirement : this.requirements) {
+                if (!requirement.checkSatisfies(player)) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+    
     public boolean isAvailable(UUID player) {
         if (!isActive()) {
             return false;
@@ -109,22 +136,11 @@ public abstract class QuestObject {
             return false;
         }
         
-        if (prerequisiteObjects != null && !prerequisiteObjects.isEmpty()) {
-            for (QuestObject questObject : this.prerequisiteObjects) {
-                if (!questObject.isComplete(player)) {
-                    return false;
-                }
-            }
+        if (!meetsPrequisites(player)) {
+            return false;
         }
-        
-        if (this.requirements != null && !this.requirements.isEmpty()) {
-            for (QuestRequirement requirement : this.requirements) {
-                if (!requirement.checkSatisfies(player)) {
-                    return false;
-                }
-            }
-        }
-        return true;
+    
+        return meetsRequirements(player);
     }
     
     public Set<QuestRequirement> getRequirements() {
@@ -153,4 +169,6 @@ public abstract class QuestObject {
         this.prerequisiteObjects.clear();
         this.prerequisiteObjects.addAll(prerequisiteObjects);
     }
+    
+    public abstract void complete(UUID uniqueId);
 }

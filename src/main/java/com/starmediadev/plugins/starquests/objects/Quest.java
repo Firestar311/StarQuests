@@ -1,6 +1,12 @@
 package com.starmediadev.plugins.starquests.objects;
 
+import com.starmediadev.plugins.starmcutils.util.MCUtils;
+import com.starmediadev.plugins.starquests.QuestManager;
+import com.starmediadev.plugins.starquests.StarQuests;
 import com.starmediadev.plugins.starquests.objects.rewards.QuestReward;
+import com.starmediadev.plugins.starquests.storage.StorageHandler;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -9,14 +15,13 @@ import java.util.UUID;
 public class Quest extends QuestObject {
     protected Set<QuestObjective> objectives = new HashSet<>();
     protected Set<QuestReward> rewards = new HashSet<>();
-    protected boolean optional;
     
     private Quest(String id) {
         super(id);
     }
     
     public void addObjective(QuestObjective objective) {
-        objective.setQuestId(this.id);
+        objective.setQuest(this);
         this.objectives.add(objective);
     }
     
@@ -45,7 +50,33 @@ public class Quest extends QuestObject {
         return new HashSet<>(rewards);
     }
     
-    public boolean isOptional() {
-        return optional;
+    @Override
+    public void complete(UUID uniqueId) {
+        QuestManager questManager = StarQuests.getInstance().getQuestManager();
+        StorageHandler storageHandler = questManager.getStorageHandler();
+        if (!storageHandler.isQuestComplete(uniqueId, getId())) {
+            storageHandler.setCompletedQuest(uniqueId, this);
+            Player player = Bukkit.getPlayer(uniqueId);
+            if (player != null) {
+                player.sendMessage(MCUtils.color("Completed Quest: " + getTitle()));
+                getRewards().forEach(reward -> {
+                    try {
+                        reward.applyReward(player);
+                    } catch (Exception e) {
+                        player.sendMessage(MCUtils.color("&cError applying reward " + e.getMessage()));
+                    }
+                });
+            }
+        }
+    
+        for (QuestLine questLine : questManager.getQuestLineRegistry().getAllRegistered()) {
+            for (Quest quest : questLine.getQuests()) {
+                if (quest.getId().equals(this.id)) {
+                    if (questLine.isComplete(uniqueId)) {
+                        questLine.complete(uniqueId);
+                    }
+                }
+            }
+        }
     }
 }

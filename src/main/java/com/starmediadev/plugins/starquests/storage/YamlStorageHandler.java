@@ -139,7 +139,7 @@ public class YamlStorageHandler implements StorageHandler {
     }
     
     @Override
-    public boolean isCompletedQuestLine(UUID uuid, QuestLine questLine) {
+    public boolean isQuestLineComplete(UUID uuid, QuestLine questLine) {
         return false; //TODO
     }
     

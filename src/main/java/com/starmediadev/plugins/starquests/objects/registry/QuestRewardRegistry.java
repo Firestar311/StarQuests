@@ -1,7 +1,7 @@
 package com.starmediadev.plugins.starquests.objects.registry;
 
 import com.starmediadev.plugins.starquests.QuestManager;
-import com.starmediadev.plugins.starquests.objects.QuestObject;
+import com.starmediadev.plugins.starquests.objects.rewards.QuestReward;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -9,10 +9,9 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * A registry for quest objects.
- * @param <Q> The quest object type
+ * A registry for quest rewards
  */
-public abstract class QuestObjectRegistry<Q extends QuestObject> {
+public class QuestRewardRegistry {
     /**
      * The quest manager
      */
@@ -20,22 +19,22 @@ public abstract class QuestObjectRegistry<Q extends QuestObject> {
     /**
      * All registered objects in this registry object
      */
-    protected Map<String, Q> registeredObjects = new HashMap<>();
+    protected Map<String, QuestReward> registeredObjects = new HashMap<>();
     
     /**
      * Constructs a new QuestObjectRegistry
      * @param questManager The quest manager to be used
      */
-    public QuestObjectRegistry(QuestManager questManager) {
+    public QuestRewardRegistry(QuestManager questManager) {
         this.questManager = questManager;
     }
     
     /**
      * Registers a new quest object
-     * @param questObject The object to register
+     * @param reward The reward to register
      */
-    public void register(Q questObject) {
-        registeredObjects.put(questObject.getId(), questObject);
+    public void register(QuestReward reward) {
+        registeredObjects.put(reward.getId(), reward);
     }
     
     /**
@@ -43,20 +42,22 @@ public abstract class QuestObjectRegistry<Q extends QuestObject> {
      * @param id The id to check
      * @return The 
      */
-    public abstract boolean isValidId(String id);
+    public boolean isValidId(String id) {
+        return true; //TODO
+    }
     
     /**
      * Gets an object
      * @param identifier This is the identifier, either the ID or a name
      * @return The registered object or null if not found
      */
-    public Q get(String identifier) {
-        Q object = null;
+    public QuestReward get(String identifier) {
+        QuestReward object = null;
         if (isValidId(identifier)) {
             object = registeredObjects.get(identifier);
         } 
         if (object == null) {
-            for (Q value : registeredObjects.values()) {
+            for (QuestReward value : registeredObjects.values()) {
                 String name = value.getName();
                 if (identifier.equalsIgnoreCase(name)) {
                     return value;
@@ -70,7 +71,7 @@ public abstract class QuestObjectRegistry<Q extends QuestObject> {
      * Gets all registered objects
      * @return All registered objects
      */
-    public List<Q> getAllRegistered() {
+    public List<QuestReward> getAllRegistered() {
         return new ArrayList<>(registeredObjects.values());
     }
     

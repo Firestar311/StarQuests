@@ -5,12 +5,13 @@ import com.starmediadev.plugins.starquests.objects.QuestLine;
 import com.starmediadev.plugins.starquests.objects.QuestObject;
 import com.starmediadev.plugins.starquests.objects.QuestObjective;
 import com.starmediadev.plugins.starquests.objects.registry.QuestLineRegistry;
+import com.starmediadev.plugins.starquests.objects.registry.QuestObjectiveRegistry;
 import com.starmediadev.plugins.starquests.objects.registry.QuestRegistry;
+import com.starmediadev.plugins.starquests.objects.registry.QuestRewardRegistry;
+import com.starmediadev.plugins.starquests.objects.rewards.QuestReward;
 import com.starmediadev.plugins.starquests.storage.StorageHandler;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 public class QuestManager {
@@ -19,11 +20,15 @@ public class QuestManager {
     
     private QuestLineRegistry questLineRegistry;
     private QuestRegistry questRegistry;
+    private QuestObjectiveRegistry objectiveRegistry;
+    private QuestRewardRegistry rewardRegistry;
     
     public QuestManager(StorageHandler storageHandler) {
         this.storageHandler = storageHandler;
         questLineRegistry = new QuestLineRegistry(this);
         questRegistry = new QuestRegistry(this);
+        objectiveRegistry = new QuestObjectiveRegistry(this);
+        rewardRegistry = new QuestRewardRegistry(this);
     }
     
     public StorageHandler getStorageHandler() {
@@ -36,7 +41,12 @@ public class QuestManager {
             return questLine;
         }
     
-        return questRegistry.get(id);
+        Quest quest = questRegistry.get(id);
+        if (quest != null) {
+            return quest;
+        }
+    
+        return objectiveRegistry.get(id);
     }
     
     public QuestRegistry getQuestRegistry() {
@@ -47,6 +57,14 @@ public class QuestManager {
         return questLineRegistry;
     }
     
+    public QuestRewardRegistry getRewardRegistry() {
+        return rewardRegistry;
+    }
+    
+    public QuestObjectiveRegistry getObjectiveRegistry() {
+        return objectiveRegistry;
+    }
+    
     public Quest getQuest(String questId) {
         return questRegistry.get(questId);
     }
@@ -55,11 +73,15 @@ public class QuestManager {
         return questRegistry.getAllRegistered();
     }
     
-    public void add(QuestObject questObject) {
-        if (questObject instanceof QuestLine questLine) {
+    public void add(Object object) {
+        if (object instanceof QuestLine questLine) {
             questLineRegistry.register(questLine);
-        } else if (questObject instanceof Quest quest) {
+        } else if (object instanceof Quest quest) {
             questRegistry.register(quest);
+        } else if (object instanceof QuestObjective questObjective) {
+            objectiveRegistry.register(questObjective);
+        } else if (object instanceof QuestReward questReward) {
+            rewardRegistry.register(questReward);
         }
     }
     
@@ -73,5 +95,9 @@ public class QuestManager {
     
     public List<QuestLine> getQuestLines() {
         return questLineRegistry.getAllRegistered();
+    }
+    
+    public boolean isQuestLineComplete(UUID player, QuestLine questLine) {
+        return storageHandler.isQuestLineComplete(player, questLine);
     }
 }
