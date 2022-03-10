@@ -34,9 +34,16 @@ public abstract class QuestObjectRegistry<Q extends QuestObject> {
     
     public abstract boolean isValidId(String id);
     
-    public Q get(String id) {
-        if (isValidId(id)) {
-            return registeredObjects.get(id);
+    public Q get(String identifier) {
+        if (isValidId(identifier)) {
+            return registeredObjects.get(identifier);
+        } else {
+            for (Q value : registeredObjects.values()) {
+                String name = value.getName();
+                if (identifier.equalsIgnoreCase(name)) {
+                    return value;
+                }
+            }
         }
         return null;
     }
