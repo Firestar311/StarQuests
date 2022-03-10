@@ -12,6 +12,11 @@ public class QuestObjectiveRegistry extends QuestObjectRegistry<QuestObjective> 
         super(questManager);
     }
     
+    @Override
+    protected String generateId() {
+        return QuestUtils.generateObjectiveId();
+    }
+    
     /**
      * {@inheritDoc}
      */

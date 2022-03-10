@@ -1,11 +1,10 @@
 package com.starmediadev.plugins.starquests;
 
 import com.starmediadev.utils.Utils;
-import org.yaml.snakeyaml.events.Event;
 
 public final class QuestUtils {
     
-    public static final int QUEST_LINE_ID_LENGTH = 10, QUEST_POOL_ID_LENGTH = 8, QUEST_ID_LENGTH = 6, OBJECTIVE_ID_LENGTH = 12;
+    public static final int QUEST_LINE_ID_LENGTH = 16, QUEST_POOL_ID_LENGTH = 8, QUEST_ID_LENGTH = 20, OBJECTIVE_ID_LENGTH = 18, REWARD_ID_LENGTH = 14;
     
     public static String generateQuestLineId() {
         return Utils.generateCode(QUEST_LINE_ID_LENGTH, false, true, false);
@@ -28,12 +27,7 @@ public final class QuestUtils {
     }
     
     public static boolean isQuestId(String id) {
-        if (id.contains("_")) {
-            String[] idSplit = id.split("_");
-            return idSplit[1].length() == QUEST_ID_LENGTH;
-        } else {
-            return id.length() == QUEST_ID_LENGTH;       
-        }
+        return id.length() == QUEST_ID_LENGTH;
     }
     
     public static String generateObjectiveId() {
@@ -41,6 +35,14 @@ public final class QuestUtils {
     }
     
     public static boolean isObjectiveId(String id) {
-        return id.length() == OBJECTIVE_ID_LENGTH; //TODO similar to quest ids
+        return id.length() == OBJECTIVE_ID_LENGTH;
+    }
+    
+    public static String generateRewardId() {
+        return Utils.generateCode(REWARD_ID_LENGTH, false, true, false);
+    }
+    
+    public static boolean isRewardId(String id) {
+        return id.length() == REWARD_ID_LENGTH;
     }
 }

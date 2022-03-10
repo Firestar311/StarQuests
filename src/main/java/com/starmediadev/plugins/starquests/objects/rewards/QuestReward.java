@@ -9,7 +9,7 @@ public abstract class QuestReward {
     /**
      * An ID for the reward
      */
-    protected final String id;
+    protected String id;
     /**
      * The name of the reward
      */
@@ -73,4 +73,8 @@ public abstract class QuestReward {
      * @throws Exception Any exceptions thrown from applying this reward
      */
     public abstract void applyReward(Player player) throws Exception;
+    
+    public void setId(String id) {
+        this.id = id;
+    }
 }

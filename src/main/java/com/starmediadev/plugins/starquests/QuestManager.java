@@ -11,6 +11,7 @@ import com.starmediadev.plugins.starquests.objects.registry.QuestRewardRegistry;
 import com.starmediadev.plugins.starquests.objects.rewards.QuestReward;
 import com.starmediadev.plugins.starquests.storage.StorageHandler;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -99,5 +100,14 @@ public class QuestManager {
     
     public boolean isQuestLineComplete(UUID player, QuestLine questLine) {
         return storageHandler.isQuestLineComplete(player, questLine);
+    }
+    
+    public List<String> getAllIds() {
+        List<String> ids = new ArrayList<>();
+        getQuestLineRegistry().getAllRegistered().forEach(object -> ids.add(object.getId()));
+        getQuestRegistry().getAllRegistered().forEach(object -> ids.add(object.getId()));
+        getObjectiveRegistry().getAllRegistered().forEach(object -> ids.add(object.getId()));
+        getRewardRegistry().getAllRegistered().forEach(object -> ids.add(object.getId())); 
+        return ids;
     }
 }

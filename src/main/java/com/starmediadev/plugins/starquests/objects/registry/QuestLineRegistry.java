@@ -15,6 +15,11 @@ public class QuestLineRegistry extends QuestObjectRegistry<QuestLine> {
         super(questManager);
     }
     
+    @Override
+    protected String generateId() {
+        return QuestUtils.generateQuestLineId();
+    }
+    
     /**
      * {@inheritDoc}
      */

@@ -10,6 +10,7 @@ import java.util.Map;
 
 /**
  * A registry for quest objects.
+ *
  * @param <Q> The quest object type
  */
 public abstract class QuestObjectRegistry<Q extends QuestObject> {
@@ -24,6 +25,7 @@ public abstract class QuestObjectRegistry<Q extends QuestObject> {
     
     /**
      * Constructs a new QuestObjectRegistry
+     *
      * @param questManager The quest manager to be used
      */
     public QuestObjectRegistry(QuestManager questManager) {
@@ -32,21 +34,48 @@ public abstract class QuestObjectRegistry<Q extends QuestObject> {
     
     /**
      * Registers a new quest object
+     *
      * @param questObject The object to register
      */
     public void register(Q questObject) {
+        if (questObject.getId() == null || questObject.getId().equals("")) {
+            questObject.setId(createNewId());
+        }
+        
+        if (questManager.getStorageHandler().isRegisteredId(questObject.getId())) {
+            questManager.getStorageHandler().removeRegisteredId(questObject.getId());
+        }
+        
         registeredObjects.put(questObject.getId(), questObject);
     }
     
     /**
+     * Generates a new ID for this type of quest object
+     *
+     * @return The newly generated ID
+     */
+    public String createNewId() {
+        String id;
+        do {
+            id = generateId();
+        } while (questManager.getStorageHandler().isRegisteredId(id) || registeredObjects.containsKey(id));
+        
+        return id;
+    }
+    
+    protected abstract String generateId();
+    
+    /**
      * Checks to see if the provided id is a valid one
+     *
      * @param id The id to check
-     * @return The 
+     * @return The
      */
     public abstract boolean isValidId(String id);
     
     /**
      * Gets an object
+     *
      * @param identifier This is the identifier, either the ID or a name
      * @return The registered object or null if not found
      */
@@ -54,7 +83,7 @@ public abstract class QuestObjectRegistry<Q extends QuestObject> {
         Q object = null;
         if (isValidId(identifier)) {
             object = registeredObjects.get(identifier);
-        } 
+        }
         if (object == null) {
             for (Q value : registeredObjects.values()) {
                 String name = value.getName();
@@ -68,6 +97,7 @@ public abstract class QuestObjectRegistry<Q extends QuestObject> {
     
     /**
      * Gets all registered objects
+     *
      * @return All registered objects
      */
     public List<Q> getAllRegistered() {
@@ -76,6 +106,7 @@ public abstract class QuestObjectRegistry<Q extends QuestObject> {
     
     /**
      * Gets the referenced questmanager
+     *
      * @return The quest manager
      */
     public QuestManager getQuestManager() {

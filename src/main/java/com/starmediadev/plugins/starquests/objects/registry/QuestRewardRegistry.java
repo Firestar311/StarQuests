@@ -1,6 +1,7 @@
 package com.starmediadev.plugins.starquests.objects.registry;
 
 import com.starmediadev.plugins.starquests.QuestManager;
+import com.starmediadev.plugins.starquests.QuestUtils;
 import com.starmediadev.plugins.starquests.objects.rewards.QuestReward;
 
 import java.util.ArrayList;
@@ -29,11 +30,27 @@ public class QuestRewardRegistry {
         this.questManager = questManager;
     }
     
+    public String createNewId() {
+        String id;
+        do {
+            id = QuestUtils.generateRewardId();
+        } while (questManager.getStorageHandler().isRegisteredId(id) || registeredObjects.containsKey(id));
+        
+        return id;
+    }
+    
     /**
      * Registers a new quest object
      * @param reward The reward to register
      */
     public void register(QuestReward reward) {
+        if (reward.getId() == null || reward.getId().equals("")) {
+            reward.setId(createNewId());
+        }
+    
+        if (questManager.getStorageHandler().isRegisteredId(reward.getId())) {
+            questManager.getStorageHandler().removeRegisteredId(reward.getId());
+        }
         registeredObjects.put(reward.getId(), reward);
     }
     
@@ -43,7 +60,7 @@ public class QuestRewardRegistry {
      * @return The 
      */
     public boolean isValidId(String id) {
-        return true; //TODO
+        return QuestUtils.isRewardId(id);
     }
     
     /**

@@ -20,9 +20,10 @@ public class YamlStorageHandler implements StorageHandler {
     private final StarQuests plugin = StarQuests.getInstance();
     private ListMap<UUID, QuestData> questDataMap = new ListMap<>();
     private ListMap<UUID, String> completedQuests = new ListMap<>();
+    private ListMap<UUID, String> completedQuestLines = new ListMap<>();
     private MultiMap<UUID, String, List<String>> completedQuestObjectives = new MultiMap<>();
-    private Config completedQuestsConfig, completedQuestObjectivesConfig, questDataConfig;
-    
+    private List<String> registeredIds = new ArrayList<>();
+    private Config completedQuestsConfig, completedQuestObjectivesConfig, completedLinesConfig, questDataConfig, registeredIdsConfig;
     
     @Override
     public void addQuestData(UUID uniqueId, QuestData value) {
@@ -78,23 +79,6 @@ public class YamlStorageHandler implements StorageHandler {
     }
     
     @Override
-    public void removeCompletedObjectives(UUID uniqueId, Quest quest) {
-        Map<String, List<String>> allCompletedObjectives = this.completedQuestObjectives.get(uniqueId);
-        if (allCompletedObjectives != null && !allCompletedObjectives.isEmpty()) {
-            allCompletedObjectives.remove(quest.getId());
-        }
-    }
-    
-    @Override
-    public void removeCompletedObjective(UUID uuid, Quest quest, QuestObjective questObjective) {
-        Map<String, List<String>> allCompletedObjectives = this.completedQuestObjectives.get(uuid);
-        if (allCompletedObjectives != null && !allCompletedObjectives.isEmpty()) {
-            List<String> completedObjectives = allCompletedObjectives.get(quest.getId());
-            completedObjectives.remove(questObjective.getId());
-        }
-    }
-    
-    @Override
     public void setCompletedObjective(UUID uniqueId, Quest quest, QuestObjective questObjective) {
         List<String> completedObjectives = completedQuestObjectives.get(uniqueId, quest.getId());
         if (completedObjectives == null) {
@@ -102,16 +86,11 @@ public class YamlStorageHandler implements StorageHandler {
             completedQuestObjectives.put(uniqueId, quest.getId(), completedObjectives);
         }
         completedObjectives.add(questObjective.getId());
-        removeQuestData(uniqueId, quest, questObjective);
     }
     
     @Override
     public void setCompletedQuest(UUID uniqueId, Quest quest) {
         completedQuests.add(uniqueId, quest.getId());
-        for (QuestObjective objective : quest.getObjectives()) {
-            removeQuestData(uniqueId, quest, objective);
-        }
-        removeCompletedObjectives(uniqueId, quest);
     }
     
     @Override
@@ -135,12 +114,28 @@ public class YamlStorageHandler implements StorageHandler {
     
     @Override
     public void setCompletedQuestLine(UUID uniqueId, QuestLine questLine) {
-        //TODO
+        this.completedQuestLines.add(uniqueId, questLine.getId());
     }
     
     @Override
     public boolean isQuestLineComplete(UUID uuid, QuestLine questLine) {
-        return false; //TODO
+        if (completedQuestLines.containsKey(uuid)) {
+            List<String> questLines = completedQuestLines.get(uuid);
+            if (questLines != null) {
+                return questLines.contains(questLine.getId());
+            }
+        }
+        return false;
+    }
+    
+    @Override
+    public void removeRegisteredId(String id) {
+       this.registeredIds.remove(id);
+    }
+    
+    @Override
+    public boolean isRegisteredId(String id) {
+        return this.registeredIds.contains(id);
     }
     
     @Override
@@ -148,10 +143,14 @@ public class YamlStorageHandler implements StorageHandler {
         completedQuestsConfig = new Config(plugin, "completedquests.yml");
         completedQuestObjectivesConfig = new Config(plugin, "completedobjectives.yml");
         questDataConfig = new Config(plugin, "questdata.yml");
+        registeredIdsConfig = new Config(plugin, "registeredids.yml");
+        completedLinesConfig = new Config(plugin, "completedlines.yml");
         
         completedQuestsConfig.setup();
         completedQuestObjectivesConfig.setup();
         questDataConfig.setup();
+        registeredIdsConfig.setup();
+        completedLinesConfig.setup();
     }
     
     @Override
@@ -164,6 +163,12 @@ public class YamlStorageHandler implements StorageHandler {
         
         questDataConfig.set("players", null);
         questDataConfig.save();
+        
+        registeredIdsConfig.set("registered", null);
+        registeredIdsConfig.save();
+        
+        completedLinesConfig.set("players", null);
+        completedLinesConfig.save();
         
         completedQuests.forEach((player, questsCompleted) -> completedQuestsConfig.set("players." + player.toString(), questsCompleted));
         
@@ -204,9 +209,15 @@ public class YamlStorageHandler implements StorageHandler {
             }
         });
         
+        this.completedQuestLines.forEach((player, questLines) -> completedLinesConfig.set("players." + player.toString(), questLines));
+        this.registeredIds.addAll(StarQuests.getInstance().getQuestManager().getAllIds());
+        this.registeredIdsConfig.set("registered", this.registeredIds);
+        
         this.completedQuestsConfig.save();
         this.completedQuestObjectivesConfig.save();
         this.questDataConfig.save();
+        this.completedLinesConfig.save();
+        this.registeredIdsConfig.save();
     }
     
     @Override
@@ -307,6 +318,18 @@ public class YamlStorageHandler implements StorageHandler {
                 }
             }
         }
+        
+        if (completedLinesConfig.contains("players")) {
+            ConfigurationSection playersSection = completedLinesConfig.getConfigurationSection("players");
+            if (playersSection != null) {
+                for (String player : playersSection.getKeys(false)) {
+                    List<String> playerCompletedLines = playersSection.getStringList(player);
+                    this.completedQuestLines.put(UUID.fromString(player), playerCompletedLines);
+                }
+            }
+        }
+    
+        this.registeredIds = new ArrayList<>(registeredIdsConfig.getStringList("registered"));
     }
     
     @Override
@@ -314,9 +337,13 @@ public class YamlStorageHandler implements StorageHandler {
         this.completedQuests.clear();
         this.completedQuestObjectives.clear();
         this.questDataMap.clear();
+        this.registeredIds.clear();
+        this.completedQuestLines.clear();
         this.completedQuestsConfig.reload();
         this.completedQuestObjectivesConfig.reload();
         this.questDataConfig.reload();
+        this.registeredIdsConfig.reload();
+        this.completedLinesConfig.reload();
         loadData();
     }
 }

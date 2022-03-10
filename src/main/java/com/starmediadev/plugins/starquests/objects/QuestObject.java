@@ -1,13 +1,8 @@
 package com.starmediadev.plugins.starquests.objects;
 
 import com.starmediadev.plugins.starmcutils.util.ColorUtils;
-import com.starmediadev.plugins.starmcutils.util.MCUtils;
 import com.starmediadev.plugins.starquests.QuestManager;
-import com.starmediadev.plugins.starquests.StarQuests;
 import com.starmediadev.plugins.starquests.objects.rewards.QuestReward;
-import com.starmediadev.plugins.starquests.storage.StorageHandler;
-import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
 
 import java.util.HashSet;
 import java.util.List;
@@ -18,7 +13,7 @@ import java.util.UUID;
  * The parent object for all base quest based objects that have an action of sorts
  */
 public abstract class QuestObject {
-    protected final String id;
+    protected String id;
     protected QuestManager questManager;
     protected String title, name, description;
     protected boolean repeatable, active;
@@ -26,7 +21,15 @@ public abstract class QuestObject {
     protected final Set<QuestRequirement> requirements = new HashSet<>();
     protected final Set<QuestReward> rewards = new HashSet<>();
     
-    public QuestObject(String id) {
+    public QuestObject(String id, String title) {
+        this.id = id;
+    }
+    
+    public QuestObject(String title) {
+        this.title = title;
+    }
+    
+    public void setId(String id) {
         this.id = id;
     }
     

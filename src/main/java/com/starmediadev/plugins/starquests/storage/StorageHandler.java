@@ -14,10 +14,6 @@ public interface StorageHandler {
     
     void removeQuestData(UUID uniqueId, Quest quest, QuestObjective questObjective);
     
-    void removeCompletedObjectives(UUID uniqueId, Quest quest);
-    
-    void removeCompletedObjective(UUID uuid, Quest quest, QuestObjective questObjective);
-    
     void setCompletedObjective(UUID uniqueId, Quest quest, QuestObjective questObjective);
     
     void setCompletedQuest(UUID uniqueId, Quest quest);
@@ -29,6 +25,10 @@ public interface StorageHandler {
     void setCompletedQuestLine(UUID uniqueId, QuestLine questLine);
     
     boolean isQuestLineComplete(UUID uuid, QuestLine questLine);
+    
+    void removeRegisteredId(String id);
+    
+    boolean isRegisteredId(String id);
     
     void setup();
     
