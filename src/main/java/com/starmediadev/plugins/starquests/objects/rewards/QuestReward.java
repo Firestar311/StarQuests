@@ -1,5 +1,6 @@
 package com.starmediadev.plugins.starquests.objects.rewards;
 
+import com.starmediadev.plugins.starquests.QuestManager;
 import org.bukkit.entity.Player;
 
 /**
@@ -18,6 +19,11 @@ public abstract class QuestReward {
      * The title of the reward. This is the one displayed
      */
     protected String title;
+    
+    /**
+     * A reference to the quest manager that registered this reward.
+     */
+    protected QuestManager questManager;
     
     /**
      * Constructs a new QuestReward
@@ -76,5 +82,9 @@ public abstract class QuestReward {
     
     public void setId(String id) {
         this.id = id;
+    }
+    
+    public void setQuestManager(QuestManager questManager) {
+        this.questManager = questManager;
     }
 }

@@ -43,6 +43,7 @@ public class QuestRewardRegistry {
      * Registers a new quest object
      * @param reward The reward to register
      */
+    @SuppressWarnings("DuplicatedCode")
     public void register(QuestReward reward) {
         if (reward.getId() == null || reward.getId().equals("")) {
             reward.setId(createNewId());
@@ -51,6 +52,9 @@ public class QuestRewardRegistry {
         if (questManager.getStorageHandler().isRegisteredId(reward.getId())) {
             questManager.getStorageHandler().removeRegisteredId(reward.getId());
         }
+        
+        reward.setQuestManager(this.questManager);
+        
         registeredObjects.put(reward.getId(), reward);
     }
     

@@ -10,6 +10,7 @@ import com.starmediadev.utils.collection.ListMap;
 import com.starmediadev.utils.collection.MultiMap;
 import com.starmediadev.utils.helper.ReflectionHelper;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -17,13 +18,17 @@ import java.util.*;
 
 public class YamlStorageHandler implements StorageHandler {
     
-    private final StarQuests plugin = StarQuests.getInstance();
+    private JavaPlugin plugin;
     private ListMap<UUID, QuestData> questDataMap = new ListMap<>();
     private ListMap<UUID, String> completedQuests = new ListMap<>();
     private ListMap<UUID, String> completedQuestLines = new ListMap<>();
     private MultiMap<UUID, String, List<String>> completedQuestObjectives = new MultiMap<>();
     private List<String> registeredIds = new ArrayList<>();
     private Config completedQuestsConfig, completedQuestObjectivesConfig, completedLinesConfig, questDataConfig, registeredIdsConfig;
+    
+    public YamlStorageHandler(JavaPlugin plugin) {
+        this.plugin = plugin;
+    }
     
     @Override
     public void addQuestData(UUID uniqueId, QuestData value) {
@@ -45,6 +50,16 @@ public class YamlStorageHandler implements StorageHandler {
                 questDataList.add(value);
             }
         }
+    }
+    
+    @Override
+    public JavaPlugin getPlugin() {
+        return plugin;
+    }
+    
+    @Override
+    public void setPlugin(JavaPlugin plugin) {
+        this.plugin = plugin;
     }
     
     @Override

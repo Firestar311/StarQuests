@@ -52,7 +52,7 @@ public class Quest extends QuestObject {
     
     @Override
     public void complete(UUID uniqueId) {
-        QuestManager questManager = StarQuests.getInstance().getQuestManager();
+        QuestManager questManager = getQuestManager();
         StorageHandler storageHandler = questManager.getStorageHandler();
         if (!storageHandler.isQuestComplete(uniqueId, getId())) {
             storageHandler.setCompletedQuest(uniqueId, this);

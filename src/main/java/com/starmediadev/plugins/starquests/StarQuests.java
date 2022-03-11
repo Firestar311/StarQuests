@@ -1,7 +1,6 @@
 package com.starmediadev.plugins.starquests;
 
 import com.starmediadev.plugins.starquests.cmds.QuestAdminCmds;
-import com.starmediadev.plugins.starquests.cmds.QuestCommands;
 import com.starmediadev.plugins.starquests.storage.StorageHandler;
 import com.starmediadev.plugins.starquests.storage.YamlStorageHandler;
 import org.bukkit.Bukkit;
@@ -24,7 +23,7 @@ public class StarQuests extends JavaPlugin {
     public void onEnable() {
         instance = this;
         saveDefaultConfig();
-        StorageHandler storageHandler = new YamlStorageHandler();
+        StorageHandler storageHandler = new YamlStorageHandler(this);
         questManager = new QuestManager(storageHandler);
         getServer().getServicesManager().register(QuestManager.class, questManager, this, ServicePriority.Highest);
         getServer().getPluginManager().registerEvents(new ActionListener(), this);
@@ -32,7 +31,6 @@ public class StarQuests extends JavaPlugin {
         CommandHandler commandHandler = BukkitCommandHandler.create(this);
         commandHandler.registerDependency(StarQuests.class, this);
         commandHandler.register(new QuestAdminCmds());
-        commandHandler.register(new QuestCommands());
         
         storageHandler.setup();
         storageHandler.loadData();

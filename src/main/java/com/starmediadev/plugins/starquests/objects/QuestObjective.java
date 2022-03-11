@@ -2,7 +2,6 @@ package com.starmediadev.plugins.starquests.objects;
 
 import com.starmediadev.plugins.starmcutils.util.MCUtils;
 import com.starmediadev.plugins.starquests.QuestManager;
-import com.starmediadev.plugins.starquests.StarQuests;
 import com.starmediadev.plugins.starquests.objects.actions.QuestAction;
 import com.starmediadev.plugins.starquests.objects.rewards.QuestReward;
 import com.starmediadev.plugins.starquests.storage.StorageHandler;
@@ -71,7 +70,7 @@ public class QuestObjective extends QuestObject {
     }
     
     public void complete(UUID uniqueId) {
-        QuestManager questManager = StarQuests.getInstance().getQuestManager();
+        QuestManager questManager = getQuestManager();
         StorageHandler storageHandler = questManager.getStorageHandler();
         Quest quest = getQuest();
         if (!storageHandler.isQuestObjectiveComplete(uniqueId, quest.getId(), this.getId())) {
@@ -103,7 +102,7 @@ public class QuestObjective extends QuestObject {
     
     @Override
     public boolean isComplete(UUID player) {
-        QuestManager questManager = StarQuests.getInstance().getQuestManager();
+        QuestManager questManager = getQuestManager();
         Quest quest = getQuest();
         if (questManager.isQuestComplete(player, quest)) {
             return true;

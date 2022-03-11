@@ -33,8 +33,12 @@ public abstract class QuestObject {
         this.id = id;
     }
     
-    public final QuestManager getQuestManager() {
+    public QuestManager getQuestManager() {
         return questManager;
+    }
+    
+    public void setQuestManager(QuestManager questManager) {
+        this.questManager = questManager;
     }
     
     public String getId() {

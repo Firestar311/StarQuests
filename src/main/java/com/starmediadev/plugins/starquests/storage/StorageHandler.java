@@ -4,6 +4,7 @@ import com.starmediadev.plugins.starquests.objects.Quest;
 import com.starmediadev.plugins.starquests.objects.QuestLine;
 import com.starmediadev.plugins.starquests.objects.QuestObjective;
 import com.starmediadev.plugins.starquests.objects.data.QuestData;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.UUID;
 
@@ -29,6 +30,10 @@ public interface StorageHandler {
     void removeRegisteredId(String id);
     
     boolean isRegisteredId(String id);
+    
+    JavaPlugin getPlugin();
+    
+    void setPlugin(JavaPlugin plugin);
     
     void setup();
     

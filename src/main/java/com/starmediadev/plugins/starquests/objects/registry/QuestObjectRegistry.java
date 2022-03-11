@@ -46,6 +46,7 @@ public abstract class QuestObjectRegistry<Q extends QuestObject> {
             questManager.getStorageHandler().removeRegisteredId(questObject.getId());
         }
         
+        questObject.setQuestManager(this.questManager);
         registeredObjects.put(questObject.getId(), questObject);
     }
     

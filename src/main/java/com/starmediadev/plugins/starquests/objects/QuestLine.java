@@ -2,7 +2,6 @@ package com.starmediadev.plugins.starquests.objects;
 
 import com.starmediadev.plugins.starmcutils.util.MCUtils;
 import com.starmediadev.plugins.starquests.QuestManager;
-import com.starmediadev.plugins.starquests.StarQuests;
 import com.starmediadev.plugins.starquests.storage.StorageHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -53,7 +52,7 @@ public class QuestLine extends QuestObject {
     
     @Override
     public void complete(UUID uniqueId) {
-        QuestManager questManager = StarQuests.getInstance().getQuestManager();
+        QuestManager questManager = getQuestManager();
         StorageHandler storageHandler = questManager.getStorageHandler();
         if (!storageHandler.isQuestLineComplete(uniqueId, this)) {
             storageHandler.setCompletedQuestLine(uniqueId, this);
