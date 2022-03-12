@@ -24,10 +24,6 @@ public class QuestObjective extends QuestObject {
         this.questAction = questAction;
     }
     
-    public String getId() {
-        return id;
-    }
-    
     @Override
     public void addPrerequisite(QuestObject questObject) {
         if (questObject instanceof Quest) {
@@ -43,31 +39,6 @@ public class QuestObjective extends QuestObject {
             }
         }
         return null;
-    }
-    
-    public String getTitle() {
-        return title;
-    }
-    
-    public void setTitle(String title) {
-        this.title = title;
-    }
-    
-    public String getName() {
-        return name;
-    }
-    
-    public QuestObjective setName(String name) {
-        this.name = name;
-        return this;
-    }
-    
-    public String getDescription() {
-        return description;
-    }
-    
-    public void setDescription(String description) {
-        this.description = description;
     }
     
     public QuestAction<?> getQuestAction() {
