@@ -11,8 +11,12 @@ import java.util.*;
 public class QuestLine extends QuestObject {
     protected Set<Quest> quests = new HashSet<>();
     
-    private QuestLine(String id) {
+    public QuestLine(String id) {
         super(id);
+    }
+    
+    public QuestLine(String id, String title) {
+        super(id, title);
     }
     
     public List<Quest> getAvailableQuests(UUID player) {

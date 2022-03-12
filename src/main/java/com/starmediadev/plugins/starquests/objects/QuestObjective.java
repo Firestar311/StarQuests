@@ -13,9 +13,14 @@ import java.util.UUID;
 public class QuestObjective extends QuestObject {
     protected final QuestAction<?> questAction;
     
-    private QuestObjective(String id, Quest parentQuest, QuestAction<?> questAction) {
-        super(id);
+    public QuestObjective(String title, Quest parentQuest, QuestAction<?> questAction) {
+        super(title);
         this.addPrerequisite(parentQuest);
+        this.questAction = questAction;
+    }
+    
+    public QuestObjective(String id, String title, QuestAction<?> questAction) {
+        super(id, title);
         this.questAction = questAction;
     }
     

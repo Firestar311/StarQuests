@@ -2,7 +2,6 @@ package com.starmediadev.plugins.starquests.objects;
 
 import com.starmediadev.plugins.starmcutils.util.MCUtils;
 import com.starmediadev.plugins.starquests.QuestManager;
-import com.starmediadev.plugins.starquests.StarQuests;
 import com.starmediadev.plugins.starquests.objects.rewards.QuestReward;
 import com.starmediadev.plugins.starquests.storage.StorageHandler;
 import org.bukkit.Bukkit;
@@ -16,13 +15,31 @@ public class Quest extends QuestObject {
     protected Set<QuestObjective> objectives = new HashSet<>();
     protected Set<QuestReward> rewards = new HashSet<>();
     
-    private Quest(String id) {
+    public Quest(String id) {
         super(id);
+    }
+    
+    public Quest(String id, String title) {
+        super(id, title);
     }
     
     public void addObjective(QuestObjective objective) {
         objective.setQuest(this);
         this.objectives.add(objective);
+    }
+    
+    @Override
+    public boolean meetsPrequisites(UUID player) {
+        for (QuestObject prerequisite : this.prerequisiteObjects) {
+            if (prerequisite instanceof QuestLine line) {
+                if (!line.isComplete(player)) {
+                    if (!line.isAvailable(player)) {
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
     }
     
     @Override

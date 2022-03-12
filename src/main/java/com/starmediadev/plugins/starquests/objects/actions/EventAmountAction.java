@@ -10,6 +10,8 @@ import org.bukkit.event.Event;
 import org.bukkit.event.entity.EntityDeathEvent;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * An abstract class for actions based on an amount of an event. This can be any event
@@ -20,9 +22,9 @@ import java.lang.reflect.Method;
 public abstract class EventAmountAction<K, D extends QuestData, E extends Event> extends QuestAction<E> {
     
     /**
-     * This is the type of thing being tracked
+     * This is the types of thing being tracked
      */
-    protected K type;
+    protected List<K> types = new ArrayList<>();
     /**
      * The amount that needs to reached
      */
@@ -36,7 +38,19 @@ public abstract class EventAmountAction<K, D extends QuestData, E extends Event>
      */
     public EventAmountAction(String actionId, K type, int amount) {
         super(actionId);
-        this.type = type;
+        this.types.add(type);
+        this.amount = amount;
+    }
+    
+    /**
+     * Constructs an EventAmountAction
+     * @param actionId Used internally, should be provided in the constructor of the child classes
+     * @param types The types to be tracked, these are grouped together as if it is one
+     * @param amount The amount to be reached
+     */
+    public EventAmountAction(String actionId, List<K> types, int amount) {
+        super(actionId);
+        this.types = types;
         this.amount = amount;
     }
     

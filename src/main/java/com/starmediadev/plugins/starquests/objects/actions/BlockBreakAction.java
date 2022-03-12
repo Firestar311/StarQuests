@@ -7,6 +7,8 @@ import com.starmediadev.plugins.starquests.storage.StorageHandler;
 import org.bukkit.Material;
 import org.bukkit.event.block.BlockBreakEvent;
 
+import java.util.List;
+
 /**
  * Represents an action for breaking a certain amount of a type of block
  */
@@ -19,6 +21,15 @@ public class BlockBreakAction extends EventAmountAction<Material, AmountQuestDat
      */
     public BlockBreakAction(Material material, int amount) {
         super("blockbreak", material, amount);
+    }
+    
+    /**
+     * Construct a BlockBreakAction
+     * @param materials The materials that needs to be broken
+     * @param amount The amount of materials
+     */
+    public BlockBreakAction(List<Material> materials, int amount) {
+        super("blockbreak", materials, amount);
     }
     
     /**
@@ -38,7 +49,7 @@ public class BlockBreakAction extends EventAmountAction<Material, AmountQuestDat
         }
         
         Material type = event.getBlock().getType();
-        if (this.type == type) {
+        if (this.types.contains(type)) {
             questData.increment();
         }
         return questData.getAmount();

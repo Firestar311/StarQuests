@@ -37,6 +37,7 @@ public abstract class QuestObjectRegistry<Q extends QuestObject> {
      *
      * @param questObject The object to register
      */
+    @SuppressWarnings("DuplicatedCode")
     public void register(Q questObject) {
         if (questObject.getId() == null || questObject.getId().equals("")) {
             questObject.setId(createNewId());

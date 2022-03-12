@@ -16,7 +16,7 @@ public abstract class QuestObject {
     protected String id;
     protected QuestManager questManager;
     protected String title, name, description;
-    protected boolean repeatable, active;
+    protected boolean repeatable, active = true;
     protected final Set<QuestObject> prerequisiteObjects = new HashSet<>(), sideQuestObjects = new HashSet<>();
     protected final Set<QuestRequirement> requirements = new HashSet<>();
     protected final Set<QuestReward> rewards = new HashSet<>();

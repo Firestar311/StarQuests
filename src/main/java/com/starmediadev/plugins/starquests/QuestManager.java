@@ -74,7 +74,7 @@ public class QuestManager {
         return questRegistry.getAllRegistered();
     }
     
-    public void add(Object object) {
+    public void register(Object object) {
         if (object instanceof QuestLine questLine) {
             questLineRegistry.register(questLine);
         } else if (object instanceof Quest quest) {

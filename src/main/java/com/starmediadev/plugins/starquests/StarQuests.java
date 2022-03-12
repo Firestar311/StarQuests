@@ -1,6 +1,7 @@
 package com.starmediadev.plugins.starquests;
 
 import com.starmediadev.plugins.starquests.cmds.QuestAdminCmds;
+import com.starmediadev.plugins.starquests.cmds.QuestCmds;
 import com.starmediadev.plugins.starquests.storage.StorageHandler;
 import com.starmediadev.plugins.starquests.storage.YamlStorageHandler;
 import org.bukkit.Bukkit;
@@ -31,6 +32,7 @@ public class StarQuests extends JavaPlugin {
         CommandHandler commandHandler = BukkitCommandHandler.create(this);
         commandHandler.registerDependency(StarQuests.class, this);
         commandHandler.register(new QuestAdminCmds());
+        commandHandler.register(new QuestCmds());
         
         storageHandler.setup();
         storageHandler.loadData();

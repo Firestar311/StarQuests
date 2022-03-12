@@ -7,6 +7,8 @@ import com.starmediadev.plugins.starquests.storage.StorageHandler;
 import org.bukkit.entity.EntityType;
 import org.bukkit.event.entity.EntityDeathEvent;
 
+import java.util.List;
+
 /**
  * Represents an action to kill a certaim amount of entities
  */
@@ -19,6 +21,15 @@ public class EntityKillAction extends EventAmountAction<EntityType, AmountQuestD
      */
     public EntityKillAction(EntityType type, int amount) {
         super("entitykill", type, amount);
+    }
+    
+    /**
+     * Construct an EntityKillAction
+     * @param types The entity types
+     * @param amount The amount to kill
+     */
+    public EntityKillAction(List<EntityType> types, int amount) {
+        super("entitykill", types, amount);
     }
     
     /**
@@ -38,7 +49,7 @@ public class EntityKillAction extends EventAmountAction<EntityType, AmountQuestD
         }
     
         EntityType type = event.getEntityType();
-        if (this.type == type) {
+        if (this.types.contains(type)) {
             questData.increment();
         }
         

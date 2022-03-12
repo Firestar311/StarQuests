@@ -18,6 +18,16 @@ public class QuestObjectiveRegistry extends QuestObjectRegistry<QuestObjective> 
     }
     
     /**
+     * Registers a quest objective and adds it to the quest that it is a part of.
+     * @param questObject The objective to register
+     */
+    @Override
+    public void register(QuestObjective questObject) {
+        questObject.getQuest().addObjective(questObject);
+        super.register(questObject);
+    }
+    
+    /**
      * {@inheritDoc}
      */
     @Override
