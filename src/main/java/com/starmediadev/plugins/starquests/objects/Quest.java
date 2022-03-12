@@ -37,6 +37,10 @@ public class Quest extends QuestObject {
                         return false;
                     }
                 }
+            } else {
+                if (!prerequisite.isComplete(player)) {
+                    return false;
+                }
             }
         }
         return true;
