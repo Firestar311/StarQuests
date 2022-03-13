@@ -22,7 +22,7 @@ public class ItemConsumeAction extends EventAmountAction<Material, AmountQuestDa
      * @param amount The amount of materials
      */
     public ItemConsumeAction(Material material, int amount) {
-        super("blockbreak", material, amount);
+        super("itemconsume", material, amount);
         if (!material.isEdible()) {
             throw new RuntimeException("The material " + material.name() + " is not an edible item.");
         }

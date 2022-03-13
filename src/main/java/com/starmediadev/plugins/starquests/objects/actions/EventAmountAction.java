@@ -9,6 +9,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.event.inventory.InventoryClickEvent;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -80,6 +81,8 @@ public abstract class EventAmountAction<K, D extends QuestData, E extends Event>
         try {
             if (e instanceof EntityDeathEvent ede) {
                 player = ede.getEntity().getKiller();
+            } else if (e instanceof InventoryClickEvent ece) {
+                player = (Player) ece.getClickedInventory().getViewers().get(0);
             } else {
                 for (Method method : e.getClass().getDeclaredMethods()) {
                     Class<?> returnType = method.getReturnType();

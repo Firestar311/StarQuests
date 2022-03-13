@@ -29,7 +29,7 @@ public class BlockPlaceAction extends EventAmountAction<Material, AmountQuestDat
      * @param amount The amount of materials
      */
     public BlockPlaceAction(List<Material> materials, int amount) {
-        super("blockbreak", materials, amount);
+        super("blockplace", materials, amount);
     }
     
     /**

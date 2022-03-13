@@ -21,7 +21,7 @@ public class ItemDropAction extends EventAmountAction<Material, AmountQuestData,
      * @param amount The amount of materials
      */
     public ItemDropAction(Material material, int amount) {
-        super("blockbreak", material, amount);
+        super("itemdrop", material, amount);
     }
     
     /**
@@ -30,7 +30,7 @@ public class ItemDropAction extends EventAmountAction<Material, AmountQuestData,
      * @param amount The amount of materials
      */
     public ItemDropAction(List<Material> materials, int amount) {
-        super("blockbreak", materials, amount);
+        super("itemdrop", materials, amount);
     }
     
     /**

@@ -10,6 +10,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityPickupItemEvent;
+import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
 
@@ -112,6 +113,23 @@ public class ActionListener implements Listener {
                 QuestAction<?> action = objective.getQuestAction();
                 if (action instanceof ItemConsumeAction itemConsumeAction) {
                     itemConsumeAction.onAction(e, quest, objective);
+                }
+            }
+        }
+    }
+    
+    @EventHandler
+    public void onItemCraft(CraftItemEvent e) {
+        if (e.getInventory().getViewers().get(0) == null) {
+            return;
+        }
+        QuestManager questManager = plugin.getQuestManager();
+        List<Quest> quests = questManager.getQuests();
+        for (Quest quest : quests) {
+            for (QuestObjective objective : quest.getObjectives()) {
+                QuestAction<?> action = objective.getQuestAction();
+                if (action instanceof ItemCraftAction itemCraftAction) {
+                    itemCraftAction.onAction(e, quest, objective);
                 }
             }
         }

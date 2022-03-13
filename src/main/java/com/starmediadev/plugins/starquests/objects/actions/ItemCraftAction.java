@@ -6,7 +6,7 @@ import com.starmediadev.plugins.starquests.objects.data.AmountQuestData;
 import com.starmediadev.plugins.starquests.storage.StorageHandler;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.event.entity.EntityPickupItemEvent;
+import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
@@ -14,15 +14,15 @@ import java.util.List;
 /**
  * Represents an action for breaking a certain amount of a type of block
  */
-public class ItemPickupAction extends EventAmountAction<Material, AmountQuestData, EntityPickupItemEvent> {
+public class ItemCraftAction extends EventAmountAction<Material, AmountQuestData, CraftItemEvent> {
     
     /**
      * Construct a BlockBreakAction
      * @param material The material that needs to be broken
      * @param amount The amount of materials
      */
-    public ItemPickupAction(Material material, int amount) {
-        super("itempickup", material, amount);
+    public ItemCraftAction(Material material, int amount) {
+        super("itemcraft", material, amount);
     }
     
     /**
@@ -30,8 +30,8 @@ public class ItemPickupAction extends EventAmountAction<Material, AmountQuestDat
      * @param materials The materials that needs to be broken
      * @param amount The amount of materials
      */
-    public ItemPickupAction(List<Material> materials, int amount) {
-        super("itempickup", materials, amount);
+    public ItemCraftAction(List<Material> materials, int amount) {
+        super("itemcraft", materials, amount);
     }
     
     /**
@@ -45,14 +45,15 @@ public class ItemPickupAction extends EventAmountAction<Material, AmountQuestDat
      */
     @SuppressWarnings("DuplicatedCode")
     @Override
-    protected int handleEvent(EntityPickupItemEvent event, Quest quest, QuestObjective questObjective, StorageHandler storageHandler, AmountQuestData questData) {
-        Player player = ((Player) event.getEntity());
+    protected int handleEvent(CraftItemEvent event, Quest quest, QuestObjective questObjective, StorageHandler storageHandler, AmountQuestData questData) {
+        Player player = (Player) event.getInventory().getViewers().get(0);
+        
         if (questData == null) {
             questData = new AmountQuestData(quest.getId(), questObjective.getId(), player.getUniqueId());
             storageHandler.addQuestData(player.getUniqueId(), questData);
         }
     
-        ItemStack itemStack = event.getItem().getItemStack();
+        ItemStack itemStack = event.getInventory().getResult();
         Material type = itemStack.getType();
         if (this.types.contains(type)) {
             questData.increment(itemStack.getAmount());
