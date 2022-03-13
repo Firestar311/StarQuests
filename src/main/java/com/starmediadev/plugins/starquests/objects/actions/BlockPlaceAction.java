@@ -5,22 +5,22 @@ import com.starmediadev.plugins.starquests.objects.QuestObjective;
 import com.starmediadev.plugins.starquests.objects.data.AmountQuestData;
 import com.starmediadev.plugins.starquests.storage.StorageHandler;
 import org.bukkit.Material;
-import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
 
 import java.util.List;
 
 /**
  * Represents an action for breaking a certain amount of a type of block
  */
-public class BlockBreakAction extends EventAmountAction<Material, AmountQuestData, BlockBreakEvent> {
+public class BlockPlaceAction extends EventAmountAction<Material, AmountQuestData, BlockPlaceEvent> {
     
     /**
      * Construct a BlockBreakAction
      * @param material The material that needs to be broken
      * @param amount The amount of materials
      */
-    public BlockBreakAction(Material material, int amount) {
-        super("blockbreak", material, amount);
+    public BlockPlaceAction(Material material, int amount) {
+        super("blockplace", material, amount);
     }
     
     /**
@@ -28,7 +28,7 @@ public class BlockBreakAction extends EventAmountAction<Material, AmountQuestDat
      * @param materials The materials that needs to be broken
      * @param amount The amount of materials
      */
-    public BlockBreakAction(List<Material> materials, int amount) {
+    public BlockPlaceAction(List<Material> materials, int amount) {
         super("blockbreak", materials, amount);
     }
     
@@ -43,7 +43,7 @@ public class BlockBreakAction extends EventAmountAction<Material, AmountQuestDat
      */
     @SuppressWarnings("DuplicatedCode")
     @Override
-    protected int handleEvent(BlockBreakEvent event, Quest quest, QuestObjective questObjective, StorageHandler storageHandler, AmountQuestData questData) {
+    protected int handleEvent(BlockPlaceEvent event, Quest quest, QuestObjective questObjective, StorageHandler storageHandler, AmountQuestData questData) {
         if (questData == null) {
             questData = new AmountQuestData(quest.getId(), questObjective.getId(), event.getPlayer().getUniqueId());
             storageHandler.addQuestData(event.getPlayer().getUniqueId(), questData);
