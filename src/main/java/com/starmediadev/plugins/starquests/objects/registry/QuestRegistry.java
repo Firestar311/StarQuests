@@ -16,6 +16,19 @@ public class QuestRegistry extends QuestObjectRegistry<Quest> {
     }
     
     @Override
+    public void register(Quest quest) {
+        super.register(quest);
+        if (quest.getQuestLine() != null) {
+            quest.getQuestLine().addQuest(quest);
+        }
+    }
+    
+    @Override
+    protected String getCachedId(String name) {
+        return questManager.getStorageHandler().getCachedQuestIds().get(name);
+    }
+    
+    @Override
     protected String generateId() {
         return QuestUtils.generateQuestId();
     }

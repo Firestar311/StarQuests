@@ -23,8 +23,13 @@ public class QuestObjectiveRegistry extends QuestObjectRegistry<QuestObjective> 
      */
     @Override
     public void register(QuestObjective questObject) {
-        questObject.getQuest().addObjective(questObject);
         super.register(questObject);
+        questObject.getQuest().addObjective(questObject);
+    }
+    
+    @Override
+    protected String getCachedId(String name) {
+        return questManager.getStorageHandler().getCachedObjectiveIds().get(name);
     }
     
     /**

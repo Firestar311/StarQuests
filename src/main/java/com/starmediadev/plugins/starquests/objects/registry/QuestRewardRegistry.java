@@ -34,7 +34,7 @@ public class QuestRewardRegistry {
         String id;
         do {
             id = QuestUtils.generateRewardId();
-        } while (questManager.getStorageHandler().isRegisteredId(id) || registeredObjects.containsKey(id));
+        } while (questManager.getStorageHandler().isCachedId(id) || registeredObjects.containsKey(id));
         
         return id;
     }
@@ -46,15 +46,17 @@ public class QuestRewardRegistry {
     @SuppressWarnings("DuplicatedCode")
     public void register(QuestReward reward) {
         if (reward.getId() == null || reward.getId().equals("")) {
-            reward.setId(createNewId());
+            String cachedId = questManager.getStorageHandler().getCachedRewardIds().get(reward.getName());
+            if (cachedId != null && !cachedId.equals("")) {
+                reward.setId(cachedId);
+            } else {
+                reward.setId(createNewId());
+            }
         }
     
-        if (questManager.getStorageHandler().isRegisteredId(reward.getId())) {
-            questManager.getStorageHandler().removeRegisteredId(reward.getId());
-        }
-        
+        reward.getQuestObject().addReward(reward);
+    
         reward.setQuestManager(this.questManager);
-        
         registeredObjects.put(reward.getId(), reward);
     }
     

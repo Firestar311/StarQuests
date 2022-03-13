@@ -6,6 +6,7 @@ import com.starmediadev.plugins.starquests.objects.Quest;
 import com.starmediadev.plugins.starquests.objects.QuestLine;
 import com.starmediadev.plugins.starquests.objects.QuestObjective;
 import com.starmediadev.plugins.starquests.objects.data.QuestData;
+import com.starmediadev.plugins.starquests.objects.rewards.QuestReward;
 import com.starmediadev.utils.collection.ListMap;
 import com.starmediadev.utils.collection.MultiMap;
 import com.starmediadev.utils.helper.ReflectionHelper;
@@ -23,8 +24,8 @@ public class YamlStorageHandler implements StorageHandler {
     private ListMap<UUID, String> completedQuests = new ListMap<>();
     private ListMap<UUID, String> completedQuestLines = new ListMap<>();
     private MultiMap<UUID, String, List<String>> completedQuestObjectives = new MultiMap<>();
-    private List<String> registeredIds = new ArrayList<>();
-    private Config completedQuestsConfig, completedQuestObjectivesConfig, completedLinesConfig, questDataConfig, registeredIdsConfig;
+    private Map<String, String> cachedQuestLineIds = new HashMap<>(), cachedQuestIds = new HashMap<>(), cachedQuestObjectiveIds = new HashMap<>(), cachedRewardIds = new HashMap<>();
+    private Config completedQuestsConfig, completedQuestObjectivesConfig, completedLinesConfig, questDataConfig, cachedIdsConfig;
     
     public YamlStorageHandler(JavaPlugin plugin) {
         this.plugin = plugin;
@@ -55,6 +56,26 @@ public class YamlStorageHandler implements StorageHandler {
     @Override
     public JavaPlugin getPlugin() {
         return plugin;
+    }
+    
+    @Override
+    public Map<String, String> getCachedQuestLineIds() {
+        return cachedQuestLineIds;
+    }
+    
+    @Override
+    public Map<String, String> getCachedQuestIds() {
+        return cachedQuestIds;
+    }
+    
+    @Override
+    public Map<String, String> getCachedObjectiveIds() {
+        return cachedQuestObjectiveIds;
+    }
+    
+    @Override
+    public Map<String, String> getCachedRewardIds() {
+        return cachedRewardIds;
     }
     
     @Override
@@ -144,27 +165,17 @@ public class YamlStorageHandler implements StorageHandler {
     }
     
     @Override
-    public void removeRegisteredId(String id) {
-       this.registeredIds.remove(id);
-    }
-    
-    @Override
-    public boolean isRegisteredId(String id) {
-        return this.registeredIds.contains(id);
-    }
-    
-    @Override
     public void setup() {
         completedQuestsConfig = new Config(plugin, "completedquests.yml");
         completedQuestObjectivesConfig = new Config(plugin, "completedobjectives.yml");
         questDataConfig = new Config(plugin, "questdata.yml");
-        registeredIdsConfig = new Config(plugin, "registeredids.yml");
+        cachedIdsConfig = new Config(plugin, "cachedids.yml");
         completedLinesConfig = new Config(plugin, "completedlines.yml");
         
         completedQuestsConfig.setup();
         completedQuestObjectivesConfig.setup();
         questDataConfig.setup();
-        registeredIdsConfig.setup();
+        cachedIdsConfig.setup();
         completedLinesConfig.setup();
     }
     
@@ -179,8 +190,8 @@ public class YamlStorageHandler implements StorageHandler {
         questDataConfig.set("players", null);
         questDataConfig.save();
         
-        registeredIdsConfig.set("registered", null);
-        registeredIdsConfig.save();
+        cachedIdsConfig.set("cache", null);
+        cachedIdsConfig.save();
         
         completedLinesConfig.set("players", null);
         completedLinesConfig.save();
@@ -225,14 +236,33 @@ public class YamlStorageHandler implements StorageHandler {
         });
         
         this.completedQuestLines.forEach((player, questLines) -> completedLinesConfig.set("players." + player.toString(), questLines));
-        this.registeredIds.addAll(StarQuests.getInstance().getQuestManager().getAllIds());
-        this.registeredIdsConfig.set("registered", this.registeredIds);
+    
+        for (QuestLine questLine : StarQuests.getInstance().getQuestManager().getQuestLineRegistry().getAllRegistered()) {
+            this.cachedQuestLineIds.put(questLine.getName(), questLine.getId());
+        }
+    
+        for (Quest quest : StarQuests.getInstance().getQuestManager().getQuestRegistry().getAllRegistered()) {
+            this.cachedQuestIds.put(quest.getName(), quest.getId());
+        }
+    
+        for (QuestObjective objective : StarQuests.getInstance().getQuestManager().getObjectiveRegistry().getAllRegistered()) {
+            this.cachedQuestObjectiveIds.put(objective.getName(), objective.getId());
+        }
+    
+        for (QuestReward reward : StarQuests.getInstance().getQuestManager().getRewardRegistry().getAllRegistered()) {
+            this.cachedRewardIds.put(reward.getName(), reward.getId());
+        }
+        
+        this.cachedQuestLineIds.forEach((name, id) -> cachedIdsConfig.set("cache.questlines." + name, id));
+        this.cachedQuestIds.forEach((name, id) -> cachedIdsConfig.set("cache.quests." + name, id));
+        this.cachedQuestObjectiveIds.forEach((name, id) -> cachedIdsConfig.set("cache.objectives." + name, id));
+        this.cachedRewardIds.forEach((name, id) -> cachedIdsConfig.set("cache.rewards." + name, id));
         
         this.completedQuestsConfig.save();
         this.completedQuestObjectivesConfig.save();
         this.questDataConfig.save();
         this.completedLinesConfig.save();
-        this.registeredIdsConfig.save();
+        this.cachedIdsConfig.save();
     }
     
     @Override
@@ -343,8 +373,36 @@ public class YamlStorageHandler implements StorageHandler {
                 }
             }
         }
-    
-        this.registeredIds = new ArrayList<>(registeredIdsConfig.getStringList("registered"));
+        
+        if (cachedIdsConfig.contains("cache")) {
+            ConfigurationSection questlinesSection = cachedIdsConfig.getConfigurationSection("cache.questlines");
+            if (questlinesSection != null) {
+                for (String lineName : questlinesSection.getKeys(false)) {
+                    this.cachedQuestLineIds.put(lineName, questlinesSection.getString(lineName));
+                }
+            }
+            
+            ConfigurationSection questsSection = cachedIdsConfig.getConfigurationSection("cache.quests");
+            if (questsSection != null) {
+                for (String questName : questsSection.getKeys(false)) {
+                    this.cachedQuestIds.put(questName, questsSection.getString(questName));
+                }
+            }
+            
+            ConfigurationSection objectivesSection = cachedIdsConfig.getConfigurationSection("cache.objectives");
+            if (objectivesSection != null) {
+                for (String objectiveName : objectivesSection.getKeys(false)) {
+                    this.cachedQuestObjectiveIds.put(objectiveName, objectivesSection.getString(objectiveName));
+                }
+            }
+            
+            ConfigurationSection rewardsSection = cachedIdsConfig.getConfigurationSection("cache.rewards");
+            if (rewardsSection != null) {
+                for (String rewardName : rewardsSection.getKeys(false)) {
+                    this.cachedRewardIds.put(rewardName, rewardsSection.getString(rewardName));
+                }
+            }
+        }
     }
     
     @Override
@@ -352,13 +410,20 @@ public class YamlStorageHandler implements StorageHandler {
         this.completedQuests.clear();
         this.completedQuestObjectives.clear();
         this.questDataMap.clear();
-        this.registeredIds.clear();
+        this.cachedQuestIds.clear();
+        this.cachedQuestLineIds.clear();
+        this.cachedQuestObjectiveIds.clear();
         this.completedQuestLines.clear();
         this.completedQuestsConfig.reload();
         this.completedQuestObjectivesConfig.reload();
         this.questDataConfig.reload();
-        this.registeredIdsConfig.reload();
+        this.cachedIdsConfig.reload();
         this.completedLinesConfig.reload();
         loadData();
+    }
+    
+    @Override
+    public boolean isCachedId(String id) {
+        return this.cachedQuestObjectiveIds.containsValue(id) || this.cachedQuestIds.containsValue(id) || this.cachedQuestLineIds.containsValue(id);
     }
 }

@@ -14,13 +14,20 @@ import java.util.UUID;
 public class Quest extends QuestObject {
     protected Set<QuestObjective> objectives = new HashSet<>();
     protected Set<QuestReward> rewards = new HashSet<>();
+    protected QuestLine questLine;
     
-    public Quest(String id) {
-        super(id);
+    public Quest(String title, QuestLine questLine, QuestObject... prerequisites) {
+        this(null, title, questLine, prerequisites);
     }
     
-    public Quest(String id, String title) {
+    public Quest(String id, String title, QuestLine questLine, QuestObject... prerequisites) {
         super(id, title);
+        this.questLine = questLine;
+        if (prerequisites != null) {
+            for (QuestObject prerequisite : prerequisites) {
+                addPrerequisite(prerequisite);
+            }
+        }
     }
     
     public void addObjective(QuestObjective objective) {
@@ -67,10 +74,6 @@ public class Quest extends QuestObject {
         return new HashSet<>(objectives);
     }
     
-    public Set<QuestReward> getRewards() {
-        return new HashSet<>(rewards);
-    }
-    
     @Override
     public void complete(UUID uniqueId) {
         QuestManager questManager = getQuestManager();
@@ -99,5 +102,9 @@ public class Quest extends QuestObject {
                 }
             }
         }
+    }
+    
+    public QuestLine getQuestLine() {
+        return questLine;
     }
 }

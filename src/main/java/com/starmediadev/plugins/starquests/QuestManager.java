@@ -41,12 +41,12 @@ public class QuestManager {
         if (questLine != null) {
             return questLine;
         }
-    
+        
         Quest quest = questRegistry.get(id);
         if (quest != null) {
             return quest;
         }
-    
+        
         return objectiveRegistry.get(id);
     }
     
@@ -107,7 +107,7 @@ public class QuestManager {
         getQuestLineRegistry().getAllRegistered().forEach(object -> ids.add(object.getId()));
         getQuestRegistry().getAllRegistered().forEach(object -> ids.add(object.getId()));
         getObjectiveRegistry().getAllRegistered().forEach(object -> ids.add(object.getId()));
-        getRewardRegistry().getAllRegistered().forEach(object -> ids.add(object.getId())); 
+        getRewardRegistry().getAllRegistered().forEach(object -> ids.add(object.getId()));
         return ids;
     }
 }

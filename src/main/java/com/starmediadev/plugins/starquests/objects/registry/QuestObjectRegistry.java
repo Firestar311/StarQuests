@@ -40,11 +40,12 @@ public abstract class QuestObjectRegistry<Q extends QuestObject> {
     @SuppressWarnings("DuplicatedCode")
     public void register(Q questObject) {
         if (questObject.getId() == null || questObject.getId().equals("")) {
-            questObject.setId(createNewId());
-        }
-        
-        if (questManager.getStorageHandler().isRegisteredId(questObject.getId())) {
-            questManager.getStorageHandler().removeRegisteredId(questObject.getId());
+            String cachedId = getCachedId(questObject.getName());
+            if (cachedId != null && !cachedId.equals("")) {
+                questObject.setId(cachedId);
+            } else {
+                questObject.setId(createNewId());
+            }
         }
         
         questObject.setQuestManager(this.questManager);
@@ -60,11 +61,12 @@ public abstract class QuestObjectRegistry<Q extends QuestObject> {
         String id;
         do {
             id = generateId();
-        } while (questManager.getStorageHandler().isRegisteredId(id) || registeredObjects.containsKey(id));
+        } while (questManager.getStorageHandler().isCachedId(id) || registeredObjects.containsKey(id));
         
         return id;
     }
     
+    protected abstract String getCachedId(String name);
     protected abstract String generateId();
     
     /**

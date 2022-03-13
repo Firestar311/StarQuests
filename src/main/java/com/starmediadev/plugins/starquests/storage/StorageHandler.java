@@ -6,6 +6,8 @@ import com.starmediadev.plugins.starquests.objects.QuestObjective;
 import com.starmediadev.plugins.starquests.objects.data.QuestData;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 public interface StorageHandler {
@@ -27,11 +29,15 @@ public interface StorageHandler {
     
     boolean isQuestLineComplete(UUID uuid, QuestLine questLine);
     
-    void removeRegisteredId(String id);
-    
-    boolean isRegisteredId(String id);
-    
     JavaPlugin getPlugin();
+    
+    Map<String, String> getCachedQuestLineIds();
+    
+    Map<String, String> getCachedQuestIds();
+    
+    Map<String, String> getCachedObjectiveIds();
+    
+    Map<String, String> getCachedRewardIds();
     
     void setPlugin(JavaPlugin plugin);
     
@@ -42,4 +48,6 @@ public interface StorageHandler {
     void loadData();
     
     void reload();
+    
+    boolean isCachedId(String id);
 }

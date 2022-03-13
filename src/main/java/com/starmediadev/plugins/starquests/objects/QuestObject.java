@@ -4,10 +4,7 @@ import com.starmediadev.plugins.starmcutils.util.ColorUtils;
 import com.starmediadev.plugins.starquests.QuestManager;
 import com.starmediadev.plugins.starquests.objects.rewards.QuestReward;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * The parent object for all base quest based objects that have an action of sorts
@@ -17,12 +14,13 @@ public abstract class QuestObject {
     protected QuestManager questManager;
     protected String title, name, description;
     protected boolean repeatable, active = true;
-    protected final Set<QuestObject> prerequisiteObjects = new HashSet<>(), sideQuestObjects = new HashSet<>();
-    protected final Set<QuestRequirement> requirements = new HashSet<>();
-    protected final Set<QuestReward> rewards = new HashSet<>();
+    protected List<QuestObject> prerequisiteObjects = new ArrayList<>(), sideQuestObjects = new ArrayList<>();
+    protected List<QuestRequirement> requirements = new ArrayList<>();
+    protected List<QuestReward> rewards = new ArrayList<>();
     
     public QuestObject(String id, String title) {
         this.id = id;
+        this.title = title;
     }
     
     public QuestObject(String title) {
@@ -106,13 +104,12 @@ public abstract class QuestObject {
         return this;
     }
     
-    public Set<QuestReward> getRewards() {
-        return new HashSet<>(rewards);
+    public List<QuestReward> getRewards() {
+        return rewards;
     }
     
     public void setRewards(List<QuestReward> rewards) {
-        this.rewards.clear();
-        this.rewards.addAll(rewards);
+        this.rewards = rewards;
     }
     
     public boolean meetsPrequisites(UUID player) {
@@ -153,32 +150,33 @@ public abstract class QuestObject {
         return meetsRequirements(player);
     }
     
-    public Set<QuestRequirement> getRequirements() {
+    public List<QuestRequirement> getRequirements() {
         return requirements;
     }
     
     public void setRequirements(List<QuestRequirement> requirements) {
-        this.requirements.clear();
-        this.requirements.addAll(requirements);
+        this.requirements = requirements;
     }
     
-    public Set<QuestObject> getSideQuestObjects() {
+    public List<QuestObject> getSideQuestObjects() {
         return sideQuestObjects;
     }
     
     public void setSideQuestObjects(List<QuestObject> sideQuestObjects) {
-        this.sideQuestObjects.clear();
-        this.sideQuestObjects.addAll(sideQuestObjects);
+        this.sideQuestObjects = sideQuestObjects;
     }
     
-    public Set<QuestObject> getPrerequisiteObjects() {
+    public List<QuestObject> getPrerequisiteObjects() {
         return prerequisiteObjects;
     }
     
     public void setPrerequisiteObjects(List<QuestObject> prerequisiteObjects) {
-        this.prerequisiteObjects.clear();
-        this.prerequisiteObjects.addAll(prerequisiteObjects);
+        this.prerequisiteObjects = prerequisiteObjects;
     }
     
     public abstract void complete(UUID uniqueId);
+    
+    public void addReward(QuestReward reward) {
+        this.rewards.add(reward);
+    }
 }
