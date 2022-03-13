@@ -5,6 +5,7 @@ import com.starmediadev.plugins.starquests.objects.Quest;
 import com.starmediadev.plugins.starquests.objects.QuestObjective;
 import com.starmediadev.plugins.starquests.objects.data.QuestData;
 import com.starmediadev.plugins.starquests.storage.StorageHandler;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.entity.EntityDeathEvent;
@@ -84,6 +85,10 @@ public abstract class EventAmountAction<K, D extends QuestData, E extends Event>
                     Class<?> returnType = method.getReturnType();
                     if (returnType != null) {
                         if (Player.class.getName().equals(returnType.getName())) {
+                            if (method.getParameters().length == 0) {
+                                player = (Player) method.invoke(e);
+                            }
+                        } else if (LivingEntity.class.getName().equals(returnType.getName())) {
                             if (method.getParameters().length == 0) {
                                 player = (Player) method.invoke(e);
                             }

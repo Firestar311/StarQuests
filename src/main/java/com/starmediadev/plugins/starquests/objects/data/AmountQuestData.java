@@ -33,6 +33,14 @@ public class AmountQuestData extends QuestData {
     }
     
     /**
+     * Increments the amount by the provided number
+     * @param amount The amount to increment
+     */
+    public void increment(int amount) {
+        this.amount += amount;
+    }
+    
+    /**
      * Gets the current amount
      * @return The current amount
      */
