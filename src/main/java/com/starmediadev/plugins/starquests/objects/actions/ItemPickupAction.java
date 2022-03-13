@@ -37,6 +37,7 @@ public class ItemPickupAction extends EventAmountAction<Material, AmountQuestDat
     /**
      * Handles the event for the action. This is used internally
      * @param event The Bukkit Event
+     * @param player
      * @param quest The quest that is being referred to
      * @param questObjective The objective
      * @param storageHandler The storage handler
@@ -45,7 +46,7 @@ public class ItemPickupAction extends EventAmountAction<Material, AmountQuestDat
      */
     @SuppressWarnings("DuplicatedCode")
     @Override
-    protected int handleEvent(EntityPickupItemEvent event, Quest quest, QuestObjective questObjective, StorageHandler storageHandler, AmountQuestData questData) {
+    protected int handleEvent(EntityPickupItemEvent event, Player player, Quest quest, QuestObjective questObjective, StorageHandler storageHandler, AmountQuestData questData) {
         Player player = ((Player) event.getEntity());
         if (questData == null) {
             questData = new AmountQuestData(quest.getId(), questObjective.getId(), player.getUniqueId());

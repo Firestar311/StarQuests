@@ -5,6 +5,7 @@ import com.starmediadev.plugins.starquests.objects.QuestObjective;
 import com.starmediadev.plugins.starquests.objects.data.AmountQuestData;
 import com.starmediadev.plugins.starquests.storage.StorageHandler;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.inventory.ItemStack;
 
@@ -50,6 +51,7 @@ public class ItemConsumeAction extends EventAmountAction<Material, AmountQuestDa
     /**
      * Handles the event for the action. This is used internally
      * @param event The Bukkit Event
+     * @param player
      * @param quest The quest that is being referred to
      * @param questObjective The objective
      * @param storageHandler The storage handler
@@ -58,7 +60,7 @@ public class ItemConsumeAction extends EventAmountAction<Material, AmountQuestDa
      */
     @SuppressWarnings("DuplicatedCode")
     @Override
-    protected int handleEvent(PlayerItemConsumeEvent event, Quest quest, QuestObjective questObjective, StorageHandler storageHandler, AmountQuestData questData) {
+    protected int handleEvent(PlayerItemConsumeEvent event, Player player, Quest quest, QuestObjective questObjective, StorageHandler storageHandler, AmountQuestData questData) {
         if (questData == null) {
             questData = new AmountQuestData(quest.getId(), questObjective.getId(), event.getPlayer().getUniqueId());
             storageHandler.addQuestData(event.getPlayer().getUniqueId(), questData);

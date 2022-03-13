@@ -5,6 +5,7 @@ import com.starmediadev.plugins.starquests.objects.QuestObjective;
 import com.starmediadev.plugins.starquests.objects.data.AmountQuestData;
 import com.starmediadev.plugins.starquests.storage.StorageHandler;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDeathEvent;
 
 import java.util.List;
@@ -35,6 +36,7 @@ public class EntityKillAction extends EventAmountAction<EntityType, AmountQuestD
     /**
      * Handles the event for the action. This is used internally
      * @param event The Bukkit Event
+     * @param player
      * @param quest The quest that is being referred to
      * @param questObjective The objective
      * @param storageHandler The storage handler
@@ -42,7 +44,7 @@ public class EntityKillAction extends EventAmountAction<EntityType, AmountQuestD
      * @return The current amount, used by the caller of this method
      */
     @Override
-    protected int handleEvent(EntityDeathEvent event, Quest quest, QuestObjective questObjective, StorageHandler storageHandler, AmountQuestData questData) {
+    protected int handleEvent(EntityDeathEvent event, Player player, Quest quest, QuestObjective questObjective, StorageHandler storageHandler, AmountQuestData questData) {
         if (questData == null) {
             questData = new AmountQuestData(quest.getId(), questObjective.getId(), event.getEntity().getKiller().getUniqueId());
             storageHandler.addQuestData(event.getEntity().getKiller().getUniqueId(), questData);

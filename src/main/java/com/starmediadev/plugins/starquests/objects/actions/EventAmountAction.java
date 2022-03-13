@@ -17,6 +17,7 @@ import java.util.List;
 
 /**
  * An abstract class for actions based on an amount of an event. This can be any event
+ *
  * @param <K> The type to be completed
  * @param <D> The quest data type
  * @param <E> The bukkit event type
@@ -34,9 +35,10 @@ public abstract class EventAmountAction<K, D extends QuestData, E extends Event>
     
     /**
      * Constructs an EventAmountAction
+     *
      * @param actionId Used internally, should be provided in the constructor of the child classes
-     * @param type The type to be tracked
-     * @param amount The amount to be reached
+     * @param type     The type to be tracked
+     * @param amount   The amount to be reached
      */
     public EventAmountAction(String actionId, K type, int amount) {
         super(actionId);
@@ -46,9 +48,10 @@ public abstract class EventAmountAction<K, D extends QuestData, E extends Event>
     
     /**
      * Constructs an EventAmountAction
+     *
      * @param actionId Used internally, should be provided in the constructor of the child classes
-     * @param types The types to be tracked, these are grouped together as if it is one
-     * @param amount The amount to be reached
+     * @param types    The types to be tracked, these are grouped together as if it is one
+     * @param amount   The amount to be reached
      */
     public EventAmountAction(String actionId, List<K> types, int amount) {
         super(actionId);
@@ -58,50 +61,29 @@ public abstract class EventAmountAction<K, D extends QuestData, E extends Event>
     
     /**
      * This method is called by the onAction method to make handling of these a little cleaner
-     * @param event The Bukkit Event
-     * @param quest The quest that is being referred to
+     *
+     * @param event          The Bukkit Event
+     * @param player         The player
+     * @param quest          The quest that is being referred to
      * @param questObjective The objective
      * @param storageHandler The storage handler
-     * @param questData The existing quest data. If it doesn't exist, it will be created
+     * @param questData      The existing quest data. If it doesn't exist, it will be created
      * @return The current amount, Used by the onAction method
      */
-    protected abstract int handleEvent(E event, Quest quest, QuestObjective questObjective, StorageHandler storageHandler, D questData);
+    protected abstract int handleEvent(E event, Player player, Quest quest, QuestObjective questObjective, StorageHandler storageHandler, D questData);
     
     /**
      * Overridden from QuestAction, handles what happens when an action happens
-     * @param e The Bukkit Event
-     * @param quest The quest
+     *
+     * @param e              The Bukkit Event
+     * @param player         The player
+     * @param quest          The quest
      * @param questObjective The objective
      */
     @Override
-    public void onAction(E e, Quest quest, QuestObjective questObjective) {
+    public void onAction(E e, Player player, Quest quest, QuestObjective questObjective) {
         QuestManager questManager = quest.getQuestManager();
         StorageHandler storageHandler = questManager.getStorageHandler();
-        Player player = null;
-        try {
-            if (e instanceof EntityDeathEvent ede) {
-                player = ede.getEntity().getKiller();
-            } else if (e instanceof InventoryClickEvent ece) {
-                player = (Player) ece.getClickedInventory().getViewers().get(0);
-            } else {
-                for (Method method : e.getClass().getDeclaredMethods()) {
-                    Class<?> returnType = method.getReturnType();
-                    if (returnType != null) {
-                        if (Player.class.getName().equals(returnType.getName())) {
-                            if (method.getParameters().length == 0) {
-                                player = (Player) method.invoke(e);
-                            }
-                        } else if (LivingEntity.class.getName().equals(returnType.getName())) {
-                            if (method.getParameters().length == 0) {
-                                player = (Player) method.invoke(e);
-                            }
-                        }
-                    }
-                }
-            }
-        } catch (Exception ex) {
-            throw new RuntimeException(ex);
-        }
         
         if (player == null) {
             throw new RuntimeException("There was a problem getting the player in an EventAmountAction of type " + getClass());
@@ -114,7 +96,7 @@ public abstract class EventAmountAction<K, D extends QuestData, E extends Event>
             } catch (ClassCastException ex) {
             }
             
-            int currentProgress = handleEvent(e, quest, questObjective, storageHandler, questData);
+            int currentProgress = handleEvent(e, player, quest, questObjective, storageHandler, questData);
             
             if (currentProgress >= amount) {
                 if (!questObjective.isComplete(player.getUniqueId())) {

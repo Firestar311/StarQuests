@@ -27,7 +27,7 @@ public class ActionListener implements Listener {
             for (QuestObjective objective : quest.getObjectives()) {
                 QuestAction<?> action = objective.getQuestAction();
                 if (action instanceof BlockBreakAction blockBreakAction) {
-                    blockBreakAction.onAction(e, quest, objective);
+                    blockBreakAction.onAction(e, player, quest, objective);
                 }
             }
         }
@@ -44,7 +44,7 @@ public class ActionListener implements Listener {
             for (QuestObjective objective : quest.getObjectives()) {
                 QuestAction<?> action = objective.getQuestAction();
                 if (action instanceof EntityKillAction mobKillAction) {
-                    mobKillAction.onAction(e, quest, objective);
+                    mobKillAction.onAction(e, player, quest, objective);
                 }
             }
         }
@@ -61,7 +61,7 @@ public class ActionListener implements Listener {
             for (QuestObjective objective : quest.getObjectives()) {
                 QuestAction<?> action = objective.getQuestAction();
                 if (action instanceof BlockPlaceAction blockPlaceAction) {
-                    blockPlaceAction.onAction(e, quest, objective);
+                    blockPlaceAction.onAction(e, player, quest, objective);
                 }
             }
         }
@@ -78,7 +78,7 @@ public class ActionListener implements Listener {
             for (QuestObjective objective : quest.getObjectives()) {
                 QuestAction<?> action = objective.getQuestAction();
                 if (action instanceof ItemDropAction itemDropAction) {
-                    itemDropAction.onAction(e, quest, objective);
+                    itemDropAction.onAction(e, player, quest, objective);
                 }
             }
         }
@@ -95,7 +95,7 @@ public class ActionListener implements Listener {
             for (QuestObjective objective : quest.getObjectives()) {
                 QuestAction<?> action = objective.getQuestAction();
                 if (action instanceof ItemPickupAction itemPickupAction) {
-                    itemPickupAction.onAction(e, quest, objective);
+                    itemPickupAction.onAction(e, player, quest, objective);
                 }
             }
         }
@@ -112,7 +112,7 @@ public class ActionListener implements Listener {
             for (QuestObjective objective : quest.getObjectives()) {
                 QuestAction<?> action = objective.getQuestAction();
                 if (action instanceof ItemConsumeAction itemConsumeAction) {
-                    itemConsumeAction.onAction(e, quest, objective);
+                    itemConsumeAction.onAction(e, player, quest, objective);
                 }
             }
         }
@@ -129,7 +129,7 @@ public class ActionListener implements Listener {
             for (QuestObjective objective : quest.getObjectives()) {
                 QuestAction<?> action = objective.getQuestAction();
                 if (action instanceof ItemCraftAction itemCraftAction) {
-                    itemCraftAction.onAction(e, quest, objective);
+                    itemCraftAction.onAction(e, player, quest, objective);
                 }
             }
         }
