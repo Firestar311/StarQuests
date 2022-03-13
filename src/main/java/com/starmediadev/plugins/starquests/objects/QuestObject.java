@@ -54,6 +54,9 @@ public abstract class QuestObject {
     }
     
     public String getDescription() {
+        if (description == null || description.equals("")) {
+            return "No Description";
+        }
         return description;
     }
     
