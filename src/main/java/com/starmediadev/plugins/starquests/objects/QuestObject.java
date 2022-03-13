@@ -9,7 +9,7 @@ import java.util.*;
 /**
  * The parent object for all base quest based objects that have an action of sorts
  */
-public abstract class QuestObject {
+public abstract class QuestObject implements Comparable<QuestObject> {
     protected String id;
     protected QuestManager questManager;
     protected String title, name, description;
@@ -27,10 +27,6 @@ public abstract class QuestObject {
         this.title = title;
     }
     
-    public void setId(String id) {
-        this.id = id;
-    }
-    
     public QuestManager getQuestManager() {
         return questManager;
     }
@@ -41,6 +37,10 @@ public abstract class QuestObject {
     
     public String getId() {
         return id;
+    }
+    
+    public void setId(String id) {
+        this.id = id;
     }
     
     public String getTitle() {
@@ -146,7 +146,7 @@ public abstract class QuestObject {
         if (!meetsPrequisites(player)) {
             return false;
         }
-    
+        
         return meetsRequirements(player);
     }
     
@@ -178,5 +178,25 @@ public abstract class QuestObject {
     
     public void addReward(QuestReward reward) {
         this.rewards.add(reward);
+    }
+    
+    public List<QuestObject> getAllPrerequisites() {
+        List<QuestObject> prerequisites = new ArrayList<>();
+        for (QuestObject prerequisiteObject : this.prerequisiteObjects) {
+            prerequisites.add(prerequisiteObject);
+            prerequisites.addAll(prerequisiteObject.getAllPrerequisites());
+        }
+        return prerequisites;
+    }
+    
+    @Override
+    public int compareTo(QuestObject o) {
+        for (QuestObject prerequisite : getAllPrerequisites()) {
+            if (prerequisite.getId().equals(o.getId())) {
+                return 1;
+            }
+        }
+        
+        return -1;
     }
 }
