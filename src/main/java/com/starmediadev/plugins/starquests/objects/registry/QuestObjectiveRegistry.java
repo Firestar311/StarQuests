@@ -28,8 +28,8 @@ public class QuestObjectiveRegistry extends QuestObjectRegistry<QuestObjective> 
     }
     
     @Override
-    protected String getCachedId(String name) {
-        return questManager.getStorageHandler().getCachedObjectiveIds().get(name);
+    protected String getCachedId(QuestObjective object) {
+        return questManager.getStorageHandler().getCachedObjectiveIds().get(object.getQuest().getQuestLine().getId() + "-" + object.getQuest().getId() + "-" + object.getName());
     }
     
     /**

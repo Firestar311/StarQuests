@@ -242,15 +242,15 @@ public class YamlStorageHandler implements StorageHandler {
         }
     
         for (Quest quest : StarQuests.getInstance().getQuestManager().getQuestRegistry().getAllRegistered()) {
-            this.cachedQuestIds.put(quest.getName(), quest.getId());
+            this.cachedQuestIds.put(quest.getQuestLine().getId() + "-" + quest.getName(), quest.getId());
         }
     
         for (QuestObjective objective : StarQuests.getInstance().getQuestManager().getObjectiveRegistry().getAllRegistered()) {
-            this.cachedQuestObjectiveIds.put(objective.getName(), objective.getId());
+            this.cachedQuestObjectiveIds.put(objective.getQuest().getQuestLine().getId() + "-" + objective.getQuest().getId() + "-" + objective.getName(), objective.getId());
         }
     
         for (QuestReward reward : StarQuests.getInstance().getQuestManager().getRewardRegistry().getAllRegistered()) {
-            this.cachedRewardIds.put(reward.getName(), reward.getId());
+            this.cachedRewardIds.put(reward.getQuestObject().getId() + "-" + reward.getName(), reward.getId());
         }
         
         this.cachedQuestLineIds.forEach((name, id) -> cachedIdsConfig.set("cache.questlines." + name, id));

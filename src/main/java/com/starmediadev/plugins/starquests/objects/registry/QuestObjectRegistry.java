@@ -40,7 +40,7 @@ public abstract class QuestObjectRegistry<Q extends QuestObject> {
     @SuppressWarnings("DuplicatedCode")
     public void register(Q questObject) {
         if (questObject.getId() == null || questObject.getId().equals("")) {
-            String cachedId = getCachedId(questObject.getName());
+            String cachedId = getCachedId(questObject);
             if (cachedId != null && !cachedId.equals("")) {
                 questObject.setId(cachedId);
             } else {
@@ -66,7 +66,7 @@ public abstract class QuestObjectRegistry<Q extends QuestObject> {
         return id;
     }
     
-    protected abstract String getCachedId(String name);
+    protected abstract String getCachedId(Q object);
     protected abstract String generateId();
     
     /**

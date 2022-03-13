@@ -46,7 +46,7 @@ public class QuestRewardRegistry {
     @SuppressWarnings("DuplicatedCode")
     public void register(QuestReward reward) {
         if (reward.getId() == null || reward.getId().equals("")) {
-            String cachedId = questManager.getStorageHandler().getCachedRewardIds().get(reward.getName());
+            String cachedId = questManager.getStorageHandler().getCachedRewardIds().get(reward.getQuestObject().getName() + "-" + reward.getName());
             if (cachedId != null && !cachedId.equals("")) {
                 reward.setId(cachedId);
             } else {
