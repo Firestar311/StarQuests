@@ -12,10 +12,7 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.inventory.CraftItemEvent;
-import org.bukkit.event.player.PlayerBedEnterEvent;
-import org.bukkit.event.player.PlayerBedLeaveEvent;
-import org.bukkit.event.player.PlayerDropItemEvent;
-import org.bukkit.event.player.PlayerItemConsumeEvent;
+import org.bukkit.event.player.*;
 
 import java.util.List;
 
@@ -89,6 +86,21 @@ public class ActionListener implements Listener {
     
     @EventHandler
     public void onBedLeave(PlayerBedLeaveEvent e) {
+        handleActionEvent(e, e.getPlayer());
+    }
+    
+    @EventHandler
+    public void onBucketFill(PlayerBucketFillEvent e) {
+        handleActionEvent(e, e.getPlayer());
+    }
+    
+    @EventHandler
+    public void onBucketEmpty(PlayerBucketEmptyEvent e) {
+        handleActionEvent(e, e.getPlayer());
+    }
+    
+    @EventHandler
+    public void onBucketEntityCapture(PlayerBucketEntityEvent e) {
         handleActionEvent(e, e.getPlayer());
     }
 }
