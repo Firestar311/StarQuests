@@ -11,6 +11,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.*;
 import org.bukkit.event.inventory.CraftItemEvent;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.*;
 
 import java.util.List;
@@ -130,5 +131,10 @@ public class ActionListener implements Listener {
     @EventHandler
     public void onPlayerCommand(PlayerCommandPreprocessEvent e) {
         handleActionEvent(e, e.getPlayer());
+    }
+    
+    @EventHandler
+    public void onInventoryClick(InventoryClickEvent e) {
+        handleActionEvent(e, (Player) e.getWhoClicked());
     }
 }
