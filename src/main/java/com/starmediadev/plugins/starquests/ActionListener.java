@@ -11,6 +11,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityPickupItemEvent;
+import org.bukkit.event.entity.EntityTameEvent;
 import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.player.*;
 
@@ -107,5 +108,12 @@ public class ActionListener implements Listener {
     @EventHandler
     public void onEntityShear(PlayerShearEntityEvent e) {
         handleActionEvent(e, e.getPlayer());
+    }
+    
+    @EventHandler
+    public void onEntityTame(EntityTameEvent e) {
+        if (e.getEntity() instanceof Player player) {
+            handleActionEvent(e, player);
+        }
     }
 }
