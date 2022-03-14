@@ -13,7 +13,7 @@ import java.util.List;
 /**
  * Represents an action for breaking a certain amount of a type of block
  */
-public class BlockBreakAction extends EventAmountAction<Material, AmountQuestData, BlockBreakEvent> {
+public class BlockBreakAction extends EventAmountAction<Material, BlockBreakEvent> {
     
     /**
      * Construct a BlockBreakAction
@@ -44,20 +44,13 @@ public class BlockBreakAction extends EventAmountAction<Material, AmountQuestDat
      * @param questObjective The objective
      * @param storageHandler The storage handler
      * @param questData      The existing quest data. If it doesn't exist, it will be created
-     * @return The current amount, used by the caller of this method
      */
     @SuppressWarnings("DuplicatedCode")
     @Override
-    protected int handleEvent(BlockBreakEvent event, Player player, Quest quest, QuestObjective questObjective, StorageHandler storageHandler, AmountQuestData questData) {
-        if (questData == null) {
-            questData = new AmountQuestData(quest.getId(), questObjective.getId(), event.getPlayer().getUniqueId());
-            storageHandler.addQuestData(event.getPlayer().getUniqueId(), questData);
-        }
-        
+    protected void handleEvent(BlockBreakEvent event, Player player, Quest quest, QuestObjective questObjective, StorageHandler storageHandler, AmountQuestData questData) {
         Material type = event.getBlock().getType();
         if (this.types.contains(type)) {
             questData.increment();
         }
-        return questData.getAmount();
     }
 }

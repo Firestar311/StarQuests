@@ -12,6 +12,8 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.inventory.CraftItemEvent;
+import org.bukkit.event.player.PlayerBedEnterEvent;
+import org.bukkit.event.player.PlayerBedLeaveEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
 
@@ -27,11 +29,16 @@ public class ActionListener implements Listener {
             return;
         }
         for (Quest quest : quests) {
-            for (QuestObjective objective : quest.getObjectives()) {
-                try {
-                    QuestAction<Event> action = (QuestAction<Event>) objective.getQuestAction();
-                    action.onAction(e, player, quest, objective);
-                } catch (Exception ex) {}
+            if (quest.isAvailable(player.getUniqueId())) {
+                for (QuestObjective objective : quest.getObjectives()) {
+                    if (objective.isAvailable(player.getUniqueId())) {
+                        try {
+                            QuestAction<Event> action = (QuestAction<Event>) objective.getQuestAction();
+                            action.onAction(e, player, quest, objective);
+                        } catch (Exception ex) {
+                        }
+                    }
+                }
             }
         }
     }
@@ -73,5 +80,15 @@ public class ActionListener implements Listener {
         if (e.getViewers().get(0) instanceof Player player) {
             handleActionEvent(e, player);
         }
+    }
+    
+    @EventHandler
+    public void onBedEnter(PlayerBedEnterEvent e) {
+        handleActionEvent(e, e.getPlayer());
+    }
+    
+    @EventHandler
+    public void onBedLeave(PlayerBedLeaveEvent e) {
+        handleActionEvent(e, e.getPlayer());
     }
 }

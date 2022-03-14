@@ -14,7 +14,7 @@ import java.util.List;
 /**
  * Represents an action for breaking a certain amount of a type of block
  */
-public class ItemDropAction extends EventAmountAction<Material, AmountQuestData, PlayerDropItemEvent> {
+public class ItemDropAction extends EventAmountAction<Material, PlayerDropItemEvent> {
     
     /**
      * Construct a BlockBreakAction
@@ -37,26 +37,18 @@ public class ItemDropAction extends EventAmountAction<Material, AmountQuestData,
     /**
      * Handles the event for the action. This is used internally
      * @param event The Bukkit Event
-     * @param player
+     * @param player The player
      * @param quest The quest that is being referred to
      * @param questObjective The objective
      * @param storageHandler The storage handler
      * @param questData The existing quest data. If it doesn't exist, it will be created
-     * @return The current amount, used by the caller of this method
      */
-    @SuppressWarnings("DuplicatedCode")
     @Override
-    protected int handleEvent(PlayerDropItemEvent event, Player player, Quest quest, QuestObjective questObjective, StorageHandler storageHandler, AmountQuestData questData) {
-        if (questData == null) {
-            questData = new AmountQuestData(quest.getId(), questObjective.getId(), event.getPlayer().getUniqueId());
-            storageHandler.addQuestData(event.getPlayer().getUniqueId(), questData);
-        }
-    
+    protected void handleEvent(PlayerDropItemEvent event, Player player, Quest quest, QuestObjective questObjective, StorageHandler storageHandler, AmountQuestData questData) {
         ItemStack itemStack = event.getItemDrop().getItemStack();
         Material type = itemStack.getType();
         if (this.types.contains(type)) {
             questData.increment(itemStack.getAmount());
         }
-        return questData.getAmount();
     }
 }

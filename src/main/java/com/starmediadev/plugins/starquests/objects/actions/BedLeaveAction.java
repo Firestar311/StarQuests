@@ -5,12 +5,12 @@ import com.starmediadev.plugins.starquests.objects.QuestObjective;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerBedEnterEvent;
 
-public class BedEnterAction extends QuestAction<PlayerBedEnterEvent> {
+public class BedLeaveAction extends QuestAction<PlayerBedEnterEvent> {
     /**
      * {@inheritDoc}.
      */
-    public BedEnterAction() {
-        super("bedenter");
+    public BedLeaveAction() {
+        super("bedleave");
     }
     
     /**

@@ -3,15 +3,11 @@ package com.starmediadev.plugins.starquests.objects.actions;
 import com.starmediadev.plugins.starquests.QuestManager;
 import com.starmediadev.plugins.starquests.objects.Quest;
 import com.starmediadev.plugins.starquests.objects.QuestObjective;
-import com.starmediadev.plugins.starquests.objects.data.QuestData;
+import com.starmediadev.plugins.starquests.objects.data.AmountQuestData;
 import com.starmediadev.plugins.starquests.storage.StorageHandler;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
-import org.bukkit.event.entity.EntityDeathEvent;
-import org.bukkit.event.inventory.InventoryClickEvent;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,10 +15,9 @@ import java.util.List;
  * An abstract class for actions based on an amount of an event. This can be any event
  *
  * @param <K> The type to be completed
- * @param <D> The quest data type
  * @param <E> The bukkit event type
  */
-public abstract class EventAmountAction<K, D extends QuestData, E extends Event> extends QuestAction<E> {
+public abstract class EventAmountAction<K, E extends Event> extends QuestAction<E> {
     
     /**
      * This is the types of thing being tracked
@@ -68,9 +63,8 @@ public abstract class EventAmountAction<K, D extends QuestData, E extends Event>
      * @param questObjective The objective
      * @param storageHandler The storage handler
      * @param questData      The existing quest data. If it doesn't exist, it will be created
-     * @return The current amount, Used by the onAction method
      */
-    protected abstract int handleEvent(E event, Player player, Quest quest, QuestObjective questObjective, StorageHandler storageHandler, D questData);
+    protected abstract void handleEvent(E event, Player player, Quest quest, QuestObjective questObjective, StorageHandler storageHandler, AmountQuestData questData);
     
     /**
      * Overridden from QuestAction, handles what happens when an action happens
@@ -85,23 +79,22 @@ public abstract class EventAmountAction<K, D extends QuestData, E extends Event>
         QuestManager questManager = quest.getQuestManager();
         StorageHandler storageHandler = questManager.getStorageHandler();
         
-        if (player == null) {
-            throw new RuntimeException("There was a problem getting the player in an EventAmountAction of type " + getClass());
+        AmountQuestData questData = null;
+        try {
+            questData = (AmountQuestData) storageHandler.getQuestData(player.getUniqueId(), quest, questObjective);
+        } catch (ClassCastException ex) {
         }
         
-        if (quest.isAvailable(player.getUniqueId())) {
-            D questData = null;
-            try {
-                questData = (D) storageHandler.getQuestData(player.getUniqueId(), quest, questObjective);
-            } catch (ClassCastException ex) {
-            }
-            
-            int currentProgress = handleEvent(e, player, quest, questObjective, storageHandler, questData);
-            
-            if (currentProgress >= amount) {
-                if (!questObjective.isComplete(player.getUniqueId())) {
-                    questObjective.complete(player.getUniqueId());
-                }
+        if (questData == null) {
+            questData = new AmountQuestData(quest.getId(), questObjective.getId(), player.getUniqueId());
+            storageHandler.addQuestData(player.getUniqueId(), questData);
+        }
+        
+        handleEvent(e, player, quest, questObjective, storageHandler, questData);
+        
+        if (questData.getAmount() >= amount) {
+            if (!questObjective.isComplete(player.getUniqueId())) {
+                questObjective.complete(player.getUniqueId());
             }
         }
     }

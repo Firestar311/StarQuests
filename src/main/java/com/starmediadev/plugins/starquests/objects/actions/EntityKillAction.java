@@ -13,7 +13,7 @@ import java.util.List;
 /**
  * Represents an action to kill a certaim amount of entities
  */
-public class EntityKillAction extends EventAmountAction<EntityType, AmountQuestData, EntityDeathEvent> {
+public class EntityKillAction extends EventAmountAction<EntityType, EntityDeathEvent> {
     
     /**
      * Construct an EntityKillAction
@@ -36,25 +36,17 @@ public class EntityKillAction extends EventAmountAction<EntityType, AmountQuestD
     /**
      * Handles the event for the action. This is used internally
      * @param event The Bukkit Event
-     * @param player
+     * @param player The player
      * @param quest The quest that is being referred to
      * @param questObjective The objective
      * @param storageHandler The storage handler
      * @param questData The existing quest data. If it doesn't exist, it will be created
-     * @return The current amount, used by the caller of this method
      */
     @Override
-    protected int handleEvent(EntityDeathEvent event, Player player, Quest quest, QuestObjective questObjective, StorageHandler storageHandler, AmountQuestData questData) {
-        if (questData == null) {
-            questData = new AmountQuestData(quest.getId(), questObjective.getId(), event.getEntity().getKiller().getUniqueId());
-            storageHandler.addQuestData(event.getEntity().getKiller().getUniqueId(), questData);
-        }
-    
+    protected void handleEvent(EntityDeathEvent event, Player player, Quest quest, QuestObjective questObjective, StorageHandler storageHandler, AmountQuestData questData) {
         EntityType type = event.getEntityType();
         if (this.types.contains(type)) {
             questData.increment();
         }
-        
-        return questData.getAmount();
     }
 }
