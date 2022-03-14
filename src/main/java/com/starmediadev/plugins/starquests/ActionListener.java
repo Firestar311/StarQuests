@@ -2,8 +2,9 @@ package com.starmediadev.plugins.starquests;
 
 import com.starmediadev.plugins.starquests.objects.Quest;
 import com.starmediadev.plugins.starquests.objects.QuestObjective;
-import com.starmediadev.plugins.starquests.objects.actions.*;
+import com.starmediadev.plugins.starquests.objects.actions.QuestAction;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -19,119 +20,58 @@ import java.util.List;
 public class ActionListener implements Listener {
     private static final StarQuests plugin = StarQuests.getInstance();
     
-    @EventHandler
-    public void onBlockBreak(BlockBreakEvent e) {
+    private void handleActionEvent(Event e, Player player) {
         QuestManager questManager = plugin.getQuestManager();
         List<Quest> quests = questManager.getQuests();
+        if (player == null) {
+            return;
+        }
         for (Quest quest : quests) {
             for (QuestObjective objective : quest.getObjectives()) {
-                QuestAction<?> action = objective.getQuestAction();
-                if (action instanceof BlockBreakAction blockBreakAction) {
-                    blockBreakAction.onAction(e, player, quest, objective);
-                }
+                try {
+                    QuestAction<Event> action = (QuestAction<Event>) objective.getQuestAction();
+                    action.onAction(e, player, quest, objective);
+                } catch (Exception ex) {}
             }
         }
+    }
+    
+    @EventHandler
+    public void onBlockBreak(BlockBreakEvent e) {
+        handleActionEvent(e, e.getPlayer());
     }
     
     @EventHandler
     public void onEntityDeath(EntityDeathEvent e) {
-        if (e.getEntity().getKiller() == null) {
-            return;
-        }
-        QuestManager questManager = plugin.getQuestManager();
-        List<Quest> quests = questManager.getQuests();
-        for (Quest quest : quests) {
-            for (QuestObjective objective : quest.getObjectives()) {
-                QuestAction<?> action = objective.getQuestAction();
-                if (action instanceof EntityKillAction mobKillAction) {
-                    mobKillAction.onAction(e, player, quest, objective);
-                }
-            }
-        }
+        handleActionEvent(e, e.getEntity().getKiller());
     }
     
     @EventHandler
     public void onBlockPlace(BlockPlaceEvent e) {
-        if (e.getPlayer() == null) {
-            return;
-        }
-        QuestManager questManager = plugin.getQuestManager();
-        List<Quest> quests = questManager.getQuests();
-        for (Quest quest : quests) {
-            for (QuestObjective objective : quest.getObjectives()) {
-                QuestAction<?> action = objective.getQuestAction();
-                if (action instanceof BlockPlaceAction blockPlaceAction) {
-                    blockPlaceAction.onAction(e, player, quest, objective);
-                }
-            }
-        }
+        handleActionEvent(e, e.getPlayer());
     }
     
     @EventHandler
     public void onItemDrop(PlayerDropItemEvent e) {
-        if (e.getPlayer() == null) {
-            return;
-        }
-        QuestManager questManager = plugin.getQuestManager();
-        List<Quest> quests = questManager.getQuests();
-        for (Quest quest : quests) {
-            for (QuestObjective objective : quest.getObjectives()) {
-                QuestAction<?> action = objective.getQuestAction();
-                if (action instanceof ItemDropAction itemDropAction) {
-                    itemDropAction.onAction(e, player, quest, objective);
-                }
-            }
-        }
+        handleActionEvent(e, e.getPlayer());
     }
     
     @EventHandler
     public void onItemPickup(EntityPickupItemEvent e) {
-        if (e.getEntity() == null || !(e.getEntity() instanceof Player)) {
-            return;
-        }
-        QuestManager questManager = plugin.getQuestManager();
-        List<Quest> quests = questManager.getQuests();
-        for (Quest quest : quests) {
-            for (QuestObjective objective : quest.getObjectives()) {
-                QuestAction<?> action = objective.getQuestAction();
-                if (action instanceof ItemPickupAction itemPickupAction) {
-                    itemPickupAction.onAction(e, player, quest, objective);
-                }
-            }
+        if (e.getEntity() instanceof Player player) {
+            handleActionEvent(e, player);
         }
     }
     
     @EventHandler
     public void onItemConsume(PlayerItemConsumeEvent e) {
-        if (e.getPlayer() == null) {
-            return;
-        }
-        QuestManager questManager = plugin.getQuestManager();
-        List<Quest> quests = questManager.getQuests();
-        for (Quest quest : quests) {
-            for (QuestObjective objective : quest.getObjectives()) {
-                QuestAction<?> action = objective.getQuestAction();
-                if (action instanceof ItemConsumeAction itemConsumeAction) {
-                    itemConsumeAction.onAction(e, player, quest, objective);
-                }
-            }
-        }
+        handleActionEvent(e, e.getPlayer());
     }
     
     @EventHandler
     public void onItemCraft(CraftItemEvent e) {
-        if (e.getInventory().getViewers().get(0) == null) {
-            return;
-        }
-        QuestManager questManager = plugin.getQuestManager();
-        List<Quest> quests = questManager.getQuests();
-        for (Quest quest : quests) {
-            for (QuestObjective objective : quest.getObjectives()) {
-                QuestAction<?> action = objective.getQuestAction();
-                if (action instanceof ItemCraftAction itemCraftAction) {
-                    itemCraftAction.onAction(e, player, quest, objective);
-                }
-            }
+        if (e.getViewers().get(0) instanceof Player player) {
+            handleActionEvent(e, player);
         }
     }
 }
