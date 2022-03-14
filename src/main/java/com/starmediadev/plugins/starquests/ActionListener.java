@@ -126,4 +126,9 @@ public class ActionListener implements Listener {
     public void onEntityInteract(PlayerInteractAtEntityEvent e) {
         handleActionEvent(e, e.getPlayer());
     }
+    
+    @EventHandler
+    public void onPlayerCommand(PlayerCommandPreprocessEvent e) {
+        handleActionEvent(e, e.getPlayer());
+    }
 }
