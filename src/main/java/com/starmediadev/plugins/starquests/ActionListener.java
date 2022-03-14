@@ -9,10 +9,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.event.entity.EntityBreedEvent;
-import org.bukkit.event.entity.EntityDeathEvent;
-import org.bukkit.event.entity.EntityPickupItemEvent;
-import org.bukkit.event.entity.EntityTameEvent;
+import org.bukkit.event.entity.*;
 import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.player.*;
 
@@ -123,5 +120,10 @@ public class ActionListener implements Listener {
         if (e.getBreeder() instanceof Player player) {
             handleActionEvent(e, player);
         }
+    }
+    
+    @EventHandler
+    public void onEntityInteract(PlayerInteractAtEntityEvent e) {
+        handleActionEvent(e, e.getPlayer());
     }
 }
