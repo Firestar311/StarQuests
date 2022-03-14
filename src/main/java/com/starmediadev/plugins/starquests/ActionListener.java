@@ -103,4 +103,9 @@ public class ActionListener implements Listener {
     public void onBucketEntityCapture(PlayerBucketEntityEvent e) {
         handleActionEvent(e, e.getPlayer());
     }
+    
+    @EventHandler
+    public void onEntityShear(PlayerShearEntityEvent e) {
+        handleActionEvent(e, e.getPlayer());
+    }
 }
