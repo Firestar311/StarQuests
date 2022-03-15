@@ -1,8 +1,11 @@
 package com.starmediadev.plugins.starquests;
 
+import com.starmediadev.plugins.starmcutils.region.Cuboid;
 import com.starmediadev.plugins.starquests.objects.Quest;
 import com.starmediadev.plugins.starquests.objects.QuestObjective;
 import com.starmediadev.plugins.starquests.objects.actions.QuestAction;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
@@ -18,6 +21,27 @@ import java.util.List;
 
 public class ActionListener implements Listener {
     private static final StarQuests plugin = StarQuests.getInstance();
+    
+    public ActionListener() {
+        Bukkit.getServer().getScheduler().runTaskTimer(plugin, () -> {
+            for (Quest quest : plugin.getQuestManager().getQuests()) {
+                if (quest.isActive()) {
+                    for (QuestObjective objective : quest.getObjectives()) {
+                        if (objective.isActive()) {
+                            for (Player player : Bukkit.getOnlinePlayers()) {
+                                if (objective.isAvailable(player.getUniqueId())) {
+                                    try {
+                                        QuestAction<Location> questAction = (QuestAction<Location>) objective.getQuestAction();
+                                        questAction.onAction(player.getLocation(), player, quest, objective);
+                                    } catch (Exception e) {}
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }, 1L, 1L);
+    }
     
     private void handleActionEvent(Event e, Player player) {
         QuestManager questManager = plugin.getQuestManager();
