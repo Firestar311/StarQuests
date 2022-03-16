@@ -19,7 +19,7 @@ public abstract class QuestAction<T> {
     protected final String actionId;
     
     /**
-     * Constructs a QusetAction
+     * Constructs a QuestAction
      *
      * @param actionId The action id
      */

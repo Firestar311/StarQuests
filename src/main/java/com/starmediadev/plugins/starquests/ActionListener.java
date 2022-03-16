@@ -1,6 +1,5 @@
 package com.starmediadev.plugins.starquests;
 
-import com.starmediadev.plugins.starmcutils.region.Cuboid;
 import com.starmediadev.plugins.starquests.objects.Quest;
 import com.starmediadev.plugins.starquests.objects.QuestObjective;
 import com.starmediadev.plugins.starquests.objects.actions.QuestAction;
@@ -12,7 +11,10 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.event.entity.*;
+import org.bukkit.event.entity.EntityBreedEvent;
+import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.event.entity.EntityPickupItemEvent;
+import org.bukkit.event.entity.EntityTameEvent;
 import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.*;
