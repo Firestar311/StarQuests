@@ -42,7 +42,6 @@ public class ItemCraftAction extends EventAmountAction<Material, CraftItemEvent>
      * @param questObjective The objective
      * @param storageHandler The storage handler
      * @param questData The existing quest data. If it doesn't exist, it will be created
-     * @return The current amount, used by the caller of this method
      */
     @SuppressWarnings("DuplicatedCode")
     @Override

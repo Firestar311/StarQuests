@@ -24,7 +24,7 @@ public class PlayerCommandAction extends QuestAction<PlayerCommandPreprocessEven
      */
     @Override
     public void onAction(PlayerCommandPreprocessEvent object, Player player, Quest quest, QuestObjective questObjective) {
-        if (object.getMessage().equalsIgnoreCase(this.command)) {
+        if (object.getMessage().startsWith(this.command)) {
             if (!questObjective.isComplete(player.getUniqueId())) {
                 questObjective.complete(player.getUniqueId());
             }
