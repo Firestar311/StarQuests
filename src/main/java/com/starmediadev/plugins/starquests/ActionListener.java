@@ -43,7 +43,7 @@ public class ActionListener implements Listener {
                     }
                 }
             }
-        }, 1L, 1L);
+        }, 1L, 20L);
     }
     
     private void handleActionEvent(Event e, Player player) {

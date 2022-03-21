@@ -1,11 +1,9 @@
 package com.starmediadev.plugins.starquests.objects.actions;
 
 import com.starmediadev.plugins.starmcutils.region.Cuboid;
-import com.starmediadev.plugins.starquests.objects.Quest;
-import com.starmediadev.plugins.starquests.objects.QuestObjective;
+import com.starmediadev.plugins.starquests.objects.*;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
-import org.bukkit.event.player.PlayerBedEnterEvent;
 
 public class CuboidEnterAction extends QuestAction<Location> {
     

@@ -1,20 +1,13 @@
 package com.starmediadev.plugins.starquests.objects.actions;
 
-import com.starmediadev.plugins.starquests.objects.Quest;
-import com.starmediadev.plugins.starquests.objects.QuestObjective;
+import com.starmediadev.plugins.starquests.objects.*;
 import com.starmediadev.plugins.starquests.objects.data.AmountQuestData;
 import com.starmediadev.plugins.starquests.storage.StorageHandler;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.CraftItemEvent;
-import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.inventory.BrewerInventory;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.inventory.meta.PotionMeta;
-import org.bukkit.potion.PotionData;
-import org.bukkit.potion.PotionType;
+import org.bukkit.event.inventory.*;
+import org.bukkit.inventory.*;
+import org.bukkit.inventory.meta.*;
+import org.bukkit.potion.*;
 
 import java.util.List;
 
@@ -57,7 +50,7 @@ public class PotionBrewAction extends EventAmountAction<PotionType, InventoryCli
     @Override
     protected void handleEvent(InventoryClickEvent event, Player player, Quest quest, QuestObjective questObjective, StorageHandler storageHandler, AmountQuestData questData) {
         Inventory inventory = event.getClickedInventory();
-        if (inventory.getHolder() instanceof BrewerInventory) {
+        if (inventory.getType().equals(InventoryType.BREWING)) {
             ItemStack itemStack = event.getCurrentItem();
             if (itemStack != null) {
                 ItemMeta itemMeta = event.getCurrentItem().getItemMeta();
